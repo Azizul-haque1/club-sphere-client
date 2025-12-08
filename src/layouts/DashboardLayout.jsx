@@ -91,7 +91,6 @@ const DashboardLayout = () => {
                                 </>
                             }
 
-
                             {
                                 role === 'manager' &&
                                 <>
@@ -129,15 +128,41 @@ const DashboardLayout = () => {
                                 </>
                             }
 
+
                             {
+                                role === 'member' &&
                                 <>
+
                                     <li>
+
+
                                         <Link to='/dashboard/my-clubs' className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="My Clubs">
                                             <FaUniversity size={16} />
 
                                             <span className="is-drawer-close:hidden">My Clubs</span>
                                         </Link>
+
                                     </li>
+                                    <li>
+                                        <Link to='/dashboard/my-events' className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="My Events
+">
+                                            <MdEvent size={16} />
+
+                                            <span className="is-drawer-close:hidden">My Events
+                                            </span>
+                                        </Link>
+                                    </li>
+
+
+
+                                    <li>
+                                        <Link to='/dashboard/payments' className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Payments">
+                                            <MdPayment />
+
+                                            <span className="is-drawer-close:hidden">Payments</span>
+                                        </Link>
+                                    </li>
+
                                 </>
                             }
 

@@ -13,8 +13,10 @@ import ManageClubs from "../pages/Dashboard/Admin/ManageClubs";
 import ViewPayments from "../pages/Dashboard/Admin/ViewPayments";
 import ClubMembers from "../pages/Dashboard/Manager/ClubMembers";
 import EventsManagement from "../pages/Dashboard/Manager/EventsManagement";
-import EventRegistrations from "../pages/Dashboard/Member/EventRegistrations";
+import EventRegistrations from "../pages/Dashboard/Manager/EventRegistrations";
 import MyClubs from "../pages/Dashboard/MyClubs";
+import MyEvents from "../pages/Dashboard/Member/MyEvents";
+import Payments from "../pages/Dashboard/Member/Payments";
 
 export const route = createBrowserRouter([
     {
@@ -58,12 +60,17 @@ export const route = createBrowserRouter([
                 index: true,
                 Component: DashboardHome,
             },
-
-
-
             {
                 path: 'my-clubs',
                 Component: MyClubs,
+            },
+            {
+                path: 'my-events',
+                Component: MyEvents,
+            },
+            {
+                path: 'payments',
+                Component: Payments,
             },
 
             // club manager route
