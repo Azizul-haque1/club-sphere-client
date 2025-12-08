@@ -1,6 +1,7 @@
 import React from 'react';
 import useAuth from '../hooks/useAuth';
 import { Link, NavLink } from 'react-router';
+import Logo from './shared/Logo';
 
 const Navbar = () => {
     const { user, logOut } = useAuth();
@@ -11,7 +12,7 @@ const Navbar = () => {
         <li><NavLink to="/clubs" className='font-medium'>Clubs</NavLink></li>
         <li><NavLink to="/events" className='font-medium'>Events</NavLink></li>
         {
-                user &&
+            user &&
             <>
 
                 <li><NavLink to="/dashboard" className='font-medium'>Dashboard</NavLink></li>
@@ -45,7 +46,7 @@ const Navbar = () => {
                             }
                         </ul>
                     </div>
-                    <a className="btn btn-ghost text-xl font-bold">daisyUI</a>
+                    <Logo />
                 </div>
 
                 {/* Desktop Navigation */}
@@ -54,7 +55,6 @@ const Navbar = () => {
                         {links}
                     </ul>
                 </div>
-
                 {/* User Profile / Avatar Section */}
                 <div className="navbar-end">
                     {user ? (

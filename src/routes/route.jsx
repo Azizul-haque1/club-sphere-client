@@ -11,6 +11,10 @@ import PrivateRoute from "./PrivateRoute";
 import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import ManageClubs from "../pages/Dashboard/Admin/ManageClubs";
 import ViewPayments from "../pages/Dashboard/Admin/ViewPayments";
+import ClubMembers from "../pages/Dashboard/Manager/ClubMembers";
+import EventsManagement from "../pages/Dashboard/Manager/EventsManagement";
+import EventRegistrations from "../pages/Dashboard/Member/EventRegistrations";
+import MyClubs from "../pages/Dashboard/MyClubs";
 
 export const route = createBrowserRouter([
     {
@@ -55,9 +59,30 @@ export const route = createBrowserRouter([
                 Component: DashboardHome,
             },
 
+
+
+            {
+                path: 'my-clubs',
+                Component: MyClubs,
+            },
+
+            // club manager route
+            {
+                path: 'events-management',
+                element: <EventsManagement />,
+            },
+            {
+                path: 'event-registrations',
+                element: <EventRegistrations />,
+            },
+            {
+                path: 'club-members',
+                element: <ClubMembers></ClubMembers>,
+            },
+
+
+
             // admin route
-
-
             {
 
                 path: 'manage-user',

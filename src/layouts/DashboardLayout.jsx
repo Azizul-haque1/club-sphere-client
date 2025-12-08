@@ -3,7 +3,9 @@ import { Link, Outlet } from 'react-router';
 import useRole from '../hooks/useRole';
 import Loader from '../components/shared/Loader';
 import { GrUserManager } from "react-icons/gr";
-import { MdGroups, MdPayment } from "react-icons/md";
+import { MdAppRegistration, MdEvent, MdGroups, MdPayment } from "react-icons/md";
+import Logo from '../components/shared/Logo';
+import { FaUniversity, FaUsers } from "react-icons/fa";
 
 const DashboardLayout = () => {
 
@@ -36,6 +38,17 @@ const DashboardLayout = () => {
                         {/* Sidebar content here */}
                         <ul className="menu w-full grow">
                             {/* List item */}
+                            <li className='mb-5'>
+                                <Link to='/' className="is-drawer-close:tooltip  is-drawer-close:tooltip-right" data-tip="Homepage">
+                                    {/* Home icon */}
+                                    <p className='text-2xl text-secondary font-bold -m-2 is-drawer-open:hidden '>C<span className='text-primary'>S</span></p>
+                                    <span className="is-drawer-close:hidden  ">
+                                        <Logo />
+                                    </span>
+
+                                </Link>
+                            </li>
+
                             <li>
                                 <Link to='/dashboard' className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Homepage">
                                     {/* Home icon */}
@@ -47,8 +60,9 @@ const DashboardLayout = () => {
                             {/* Admin links */}
 
                             {
-                                <>
 
+                                role === 'admin' &&
+                                <>
 
                                     <li>
                                         <Link to='/dashboard/manage-user' className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Manage User">
@@ -72,6 +86,56 @@ const DashboardLayout = () => {
                                             <MdPayment />
 
                                             <span className="is-drawer-close:hidden">View Payments</span>
+                                        </Link>
+                                    </li>
+                                </>
+                            }
+
+
+                            {
+                                role === 'manager' &&
+                                <>
+                                    <li>
+                                        <Link to='/dashboard/my-clubs' className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="My Clubs">
+                                            <FaUniversity size={16} />
+
+                                            <span className="is-drawer-close:hidden">My Clubs</span>
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link to='/dashboard/club-members' className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Club Members">
+                                            <FaUsers size={16} />
+
+                                            <span className="is-drawer-close:hidden">Club Members</span>
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link to='/dashboard/events-management' className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Events Management">
+                                            <MdEvent size={16} />
+
+                                            <span className="is-drawer-close:hidden">Events Management</span>
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link to='/dashboard/event-registrations' className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Event Registrations
+">
+                                            <MdAppRegistration size={16} />
+
+                                            <span className="is-drawer-close:hidden">Event Registrations
+                                            </span>
+                                        </Link>
+                                    </li>
+
+                                </>
+                            }
+
+                            {
+                                <>
+                                    <li>
+                                        <Link to='/dashboard/my-clubs' className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="My Clubs">
+                                            <FaUniversity size={16} />
+
+                                            <span className="is-drawer-close:hidden">My Clubs</span>
                                         </Link>
                                     </li>
                                 </>
