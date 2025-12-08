@@ -1,11 +1,11 @@
 import React from 'react';
 
-const MyClubs = () => {
+const MemberHome = () => {
     return (
         <div>
-            manager my clubs
+            MemberHome
         </div>
     );
 };
 
-export default MyClubs;
+export default MemberHome;

@@ -1,6 +1,9 @@
 import React from 'react';
 import useRole from '../../hooks/useRole';
 import Loader from '../../components/shared/Loader';
+import AdminHome from './Admin/AdminHome';
+import ManagerHome from './Manager/ManagerHome';
+import MemberHome from './Member/MemberHome';
 
 const DashboardHome = () => {
     const { role, roleLoading } = useRole()
@@ -10,17 +13,17 @@ const DashboardHome = () => {
     }
 
     if (role === 'admin')
-        return 'admin'
-    else if(role ==='manager'){
-        return 'menager'
+        return <AdminHome />
+    else if (role === 'manager') {
+        return <ManagerHome />
     }
-    else if(role ==='member'){
-        return 'member'
+    else {
+        return <MemberHome />
     }
-    
 
 
- 
+
+
 };
 
 export default DashboardHome;

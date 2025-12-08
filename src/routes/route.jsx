@@ -7,6 +7,10 @@ import Clubs from "../pages/Clubs/Clubs";
 import ClubDetails from "../pages/Clubs/ClubDetails";
 import DashboardLayout from "../layouts/DashboardLayout";
 import DashboardHome from "../pages/Dashboard/DashboardHome";
+import PrivateRoute from "./PrivateRoute";
+import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
+import ManageClubs from "../pages/Dashboard/Admin/ManageClubs";
+import ViewPayments from "../pages/Dashboard/Admin/ViewPayments";
 
 export const route = createBrowserRouter([
     {
@@ -40,14 +44,36 @@ export const route = createBrowserRouter([
 
         ]
     },
-
     {
         path: 'dashboard',
-        Component: DashboardLayout,
+        element: <PrivateRoute>
+            <DashboardLayout></DashboardLayout>
+        </PrivateRoute>,
         children: [
             {
                 index: true,
                 Component: DashboardHome,
+            },
+
+            // admin route
+
+
+            {
+
+                path: 'manage-user',
+                element: <ManageUsers />
+
+
+            },
+            {
+
+                path: 'manage-clubs',
+                element: <ManageClubs />
+            },
+            {
+
+                path: 'view-payments',
+                element: <ViewPayments />
             },
 
         ]
