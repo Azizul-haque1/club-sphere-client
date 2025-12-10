@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 const ManageUsers = () => {
     const axiosSecure = useAxiosSecure()
     const showAlert = useAlert()
-    const { data: users = [] } = useQuery({
+    const { data: users = [], refetch } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
             const res = await axiosSecure.get('/users')
@@ -16,7 +16,10 @@ const ManageUsers = () => {
     })
 
     const handleChangeRole = (user, role) => {
-        console.log(role);
+
+        const updateDoc = {
+            role: role,
+        }
         Swal.fire({
             title: `Are you sure, ${role}?`,
             icon: "warning",
@@ -26,9 +29,19 @@ const ManageUsers = () => {
             confirmButtonText: "Yes"
         }).then((result) => {
             if (result.isConfirmed) {
-                showAlert({
-                    title: `${user.displayName} maked as an ${role}`
-                })
+
+                axiosSecure.patch(`/users/${user._id}/role`, updateDoc)
+                    .then(res => {
+                        if (res.data.modifiedCount) {
+                            // console.log(res.data);
+                            refetch()
+                            showAlert({
+                                title: `${user.displayName} maked as an ${role}`
+                            })
+                        }
+                    })
+                    .catch(err => console.log(err))
+
 
             }
         });
