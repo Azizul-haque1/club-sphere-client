@@ -2,54 +2,63 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
+import useAlert from "../../../hooks/userAlert";
 
 const ManageClubs = () => {
-  // Sample club data
+  const showAlert = useAlert()
   const { user } = useAuth()
   const axiosSecure = useAxiosSecure()
-  const { data: clubs = [] } = useQuery({
+  const { data: clubs = [], refetch } = useQuery({
     queryKey: ['clubs', user.email],
     queryFn: async () => {
       const res = await axiosSecure.get(`/clubs?email=${user.email}`)
       return res.data
     }
   })
-  // const clubs = [
-  //   {
-  //     clubName: "Chess Club",
-  //     managerEmail: "chess@example.com",
-  //     status: "Pending",
-  //     membershipFee: 50,
-  //     membersCount: 20,
-  //     eventsCount: 5
-  //   },
-  //   {
-  //     clubName: "Book Club",
-  //     managerEmail: "book@example.com",
-  //     status: "Active",
-  //     membershipFee: 30,
-  //     membersCount: 15,
-  //     eventsCount: 3
-  //   },
-  //   {
-  //     clubName: "Fitness Club",
-  //     managerEmail: "fitness@example.com",
-  //     status: "Pending",
-  //     membershipFee: 75,
-  //     membersCount: 40,
-  //     eventsCount: 10
-  //   }
-  // ];
 
-  // Map status to DaisyUI badge classes
   const statusBadge = (status) => {
     const classes = {
-      active: "badge badge-success",
+      approved: "badge badge-success",
       pending: "badge badge-warning",
-      inactive: "badge badge-error"
+      rejected: "badge badge-error"
     };
     return classes[status] || "badge";
   };
+
+
+  const handleChangeStatus = (club, status) => {
+    const updateDoc = { status };
+
+    Swal.fire({
+      title: `Are you sure you want to ${status}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axiosSecure.patch(`/clubs/${club._id}/status`, updateDoc)
+          .then(res => {
+            if (res.data.modifiedCount) {
+              // Refetch data after successful update
+              refetch();
+              const capitalizedStatus = status.charAt(0).toUpperCase() + status.slice(1);
+              Swal.fire({
+                title: `${capitalizedStatus}d Successfully`,
+                text: `The club "${club.name}" has been ${status}d.`
+              });
+            }
+          })
+          .catch(err => console.log(err));
+      }
+    });
+  };
+
+  const handleMakeStatus = (club, status) => {
+    handleChangeStatus(club, status)
+  }
 
 
 
@@ -90,10 +99,14 @@ const ManageClubs = () => {
                 <td className="flex gap-2">
                   {club.status === "pending" && (
                     <>
-                      <button className="btn btn-sm btn-success">
+                      <button
+                        onClick={() => handleMakeStatus(club, 'approved')}
+                        className="btn btn-sm btn-success">
                         Approve
                       </button>
-                      <button className="btn btn-sm btn-error">Reject</button>
+                      <button
+                        onClick={() => handleMakeStatus(club, 'rejected')}
+                        className="btn btn-sm btn-error">Reject</button>
                     </>
                   )}
                   <button className="btn btn-sm btn-primary">View Stats</button>
