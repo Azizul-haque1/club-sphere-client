@@ -1,9 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import useAlert from '../../../hooks/userAlert';
+import Swal from 'sweetalert2';
 
 const ManageUsers = () => {
     const axiosSecure = useAxiosSecure()
+    const showAlert = useAlert()
     const { data: users = [] } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
@@ -11,6 +14,43 @@ const ManageUsers = () => {
             return res.data
         }
     })
+
+    const handleChangeRole = (user, role) => {
+        console.log(role);
+        Swal.fire({
+            title: `Are you sure, ${role}?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                showAlert({
+                    title: `${user.displayName} maked as an ${role}`
+                })
+
+            }
+        });
+
+
+    }
+
+    const handleMakeAdmin = (user, role) => {
+        handleChangeRole(user, role)
+
+    }
+    const handleMakeManager = (user, role) => {
+        handleChangeRole(user, role)
+
+    }
+    const handleMakeMember = (user, role) => {
+        handleChangeRole(user, role)
+
+    }
+
+
+
 
     return (
         <div className="p-6">
@@ -38,7 +78,7 @@ const ManageUsers = () => {
 
                                     {/* Make Admin */}
                                     <button
-                                        // onClick={() => changeRole(user.id, "admin")}
+                                        onClick={() => handleMakeAdmin(user, 'admin')}
                                         className="btn btn-sm btn-primary"
                                     >
                                         Make Admin
@@ -46,7 +86,8 @@ const ManageUsers = () => {
 
                                     {/* Make Club Manager */}
                                     <button
-                                        // onClick={() => changeRole(user.id, "clubManager")}
+                                        onClick={() => handleMakeManager(user, 'manager')}
+
                                         className="btn btn-sm btn-accent"
                                     >
                                         Club Manager
@@ -54,7 +95,8 @@ const ManageUsers = () => {
 
                                     {/* Make Member */}
                                     <button
-                                        // onClick={() => changeRole(user.id, "member")}
+                                        onClick={() => handleMakeMember(user, 'member')}
+
                                         className="btn btn-sm btn-success"
                                     >
                                         Member
