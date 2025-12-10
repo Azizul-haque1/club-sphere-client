@@ -17,6 +17,7 @@ import EventRegistrations from "../pages/Dashboard/Manager/EventRegistrations";
 import MyClubs from "../pages/Dashboard/MyClubs";
 import MyEvents from "../pages/Dashboard/Member/MyEvents";
 import Payments from "../pages/Dashboard/Member/Payments";
+import ErrorPage from "../components/ErrorPage";
 
 export const route = createBrowserRouter([
     {
@@ -109,6 +110,11 @@ export const route = createBrowserRouter([
             },
 
         ]
+    },
+
+    {
+        path: '*',
+        Component: ErrorPage,
     }
 
 

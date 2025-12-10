@@ -43,11 +43,11 @@ const ManageClubs = () => {
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Manage Clubs</h1>
 
-      <div className="overflow-x-auto">
-        <table className="table w-full">
+      <div className="overflow-x-auto ">
+        <table className="table w-full border border-gray-300">
           {/* Table head */}
           <thead>
-            <tr>
+            <tr className="bg-base-200">
               <th>Club Name</th>
               <th>Manager Email</th>
               <th>Status</th>

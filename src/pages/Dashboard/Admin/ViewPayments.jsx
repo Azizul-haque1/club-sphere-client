@@ -40,10 +40,10 @@ const ViewPayments = () => {
             <h1 className="text-2xl font-bold mb-4">View Payments</h1>
 
             <div className="overflow-x-auto">
-                <table className="table w-full">
+                <table className="table w-full border border-gray-300">
                     {/* Table head */}
                     <thead>
-                        <tr>
+                        <tr className="bg-base-200">
                             <th>User Email</th>
                             <th>Amount ($)</th>
                             <th>Type</th>

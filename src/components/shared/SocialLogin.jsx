@@ -14,13 +14,14 @@ const SocialLogin = () => {
             .then(res => {
                 // setLoading(false)
                 console.log(res.user);
+
+
                 // create user in db
                 const userInfo = {
                     email: res.user.email,
                     displayName: res.user.displayName,
                     photoURL: res.user.photoURL,
                 }
-
                 axiosSecure.post('/users', userInfo)
                     .then(res => {
                         console.log(res.data);
