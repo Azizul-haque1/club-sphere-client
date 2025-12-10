@@ -1,30 +1,101 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 const EventsManagement = () => {
     const [events, setEvents] = useState([
         {
             id: "1",
-            title: "Chess Tournament",
-            description: "Competitive chess event",
-            date: "2025-06-20",
-            location: "Main Hall",
+            clubId: "c101",
+            title: "Photography Workshop",
+            description: "Learn advanced photography techniques.",
+            date: "2025-12-20",
+            location: "Studio Room A",
             isPaid: true,
-            eventFee: 15,
-            maxAttendees: 40,
+            eventFee: 25,
+            maxAttendees: 30,
         },
         {
             id: "2",
-            title: "Book Reading",
-            description: "Monthly reading session",
-            date: "2025-07-05",
-            location: "Library Room 1",
+            clubId: "c102",
+            title: "Hiking Meetup",
+            description: "Weekend hiking trip to the mountains.",
+            date: "2025-12-28",
+            location: "Blue Mountain Trail",
             isPaid: false,
             eventFee: 0,
-            maxAttendees: 25,
+            maxAttendees: 20,
         },
     ]);
 
+    // Example clubs for reference
+    const clubs = [
+        { _id: "c101", clubName: "Photography Club" },
+        { _id: "c102", clubName: "Hiking Club" },
+    ];
+
+
     const [selectedEvent, setSelectedEvent] = useState(null);
+
+    // React Hook Form for Create
+    const {
+        register: createRegister,
+        handleSubmit: handleCreateSubmit,
+        reset: resetCreateForm,
+        watch: watchCreateForm,
+    } = useForm();
+
+    // React Hook Form for Edit
+    const {
+        register: editRegister,
+        handleSubmit: handleEditSubmit,
+        reset: resetEditForm,
+        watch: watchEditForm,
+    } = useForm();
+
+    // -----------------------------
+    // CREATE EVENT HANDLER
+    // -----------------------------
+    const onCreateEvent = (data) => {
+        const newEvent = {
+            ...data,
+            id: Date.now().toString(),
+            isPaid: data.isPaid || false,
+            eventFee: data.isPaid ? Number(data.eventFee) : '0',
+            maxAttendees: Number(data.maxAttendees),
+        };
+        setEvents([...events, newEvent]);
+        resetCreateForm();
+        document.getElementById("create_modal").close();
+    };
+
+    // -----------------------------
+    // EDIT EVENT HANDLER
+    // -----------------------------
+    const onEditEvent = (data) => {
+        setEvents((prev) =>
+            prev.map((ev) =>
+                ev.id === selectedEvent.id
+                    ? {
+                        ...ev,
+                        ...data,
+                        isPaid: data.isPaid || false,
+                        eventFee: data.isPaid ? Number(data.eventFee) : '0',
+                        maxAttendees: Number(data.maxAttendees),
+                    }
+                    : ev
+            )
+        );
+        resetEditForm();
+        document.getElementById("edit_modal").close();
+    };
+
+    // -----------------------------
+    // DELETE EVENT HANDLER
+    // -----------------------------
+    const onDeleteEvent = () => {
+        setEvents((prev) => prev.filter((ev) => ev.id !== selectedEvent.id));
+        document.getElementById("delete_modal").close();
+    };
 
     return (
         <div className="p-6">
@@ -33,7 +104,7 @@ const EventsManagement = () => {
             {/* CREATE BUTTON */}
             <button
                 className="btn btn-primary mb-4"
-                onClick={() => document.getElementById("create_modal")?.showModal()}
+                onClick={() => document.getElementById("create_modal").showModal()}
             >
                 Create Event
             </button>
@@ -43,6 +114,7 @@ const EventsManagement = () => {
                 <table className="table w-full">
                     <thead className="bg-base-200">
                         <tr>
+                            <th>Club</th>
                             <th>Title</th>
                             <th>Date</th>
                             <th>Location</th>
@@ -53,131 +125,218 @@ const EventsManagement = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {events.map((ev) => (
-                            <tr key={ev.id}>
-                                <td>{ev.title}</td>
-                                <td>{ev.date}</td>
-                                <td>{ev.location}</td>
-                                <td>
-                                    <span className={`badge ${ev.isPaid ? "badge-warning" : "badge-success"}`}>
-                                        {ev.isPaid ? "Paid" : "Free"}
-                                    </span>
-                                </td>
-                                <td>${ev.eventFee}</td>
-                                <td>{ev.maxAttendees}</td>
-                                <td className="text-right flex gap-2 justify-end">
-                                    <button
-                                        className="btn btn-sm btn-outline"
-                                        onClick={() => {
-                                            setSelectedEvent(ev);
-                                            document.getElementById("edit_modal")?.showModal();
-                                        }}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        className="btn btn-sm btn-error"
-                                        onClick={() => {
-                                            setSelectedEvent(ev);
-                                            document.getElementById("delete_modal")?.showModal();
-                                        }}
-                                    >
-                                        Delete
-                                    </button>
+                        {events.length === '0' && (
+                            <tr>
+                                <td colSpan={8} className="text-center py-6">
+                                    No events found
                                 </td>
                             </tr>
-                        ))}
+                        )}
+                        {events.map((ev) => {
+                            const club = clubs.find((c) => c._id === ev.clubId);
+                            return (
+                                <tr key={ev.id}>
+                                    <td>{club?.clubName}</td>
+                                    <td>{ev.title}</td>
+                                    <td>{ev.date}</td>
+                                    <td>{ev.location}</td>
+                                    <td>
+                                        <span
+                                            className={`badge ${ev.isPaid ? "badge-warning" : "badge-success"
+                                                }`}
+                                        >
+                                            {ev.isPaid ? "Paid" : "Free"}
+                                        </span>
+                                    </td>
+                                    <td>${ev.eventFee}</td>
+                                    <td>{ev.maxAttendees}</td>
+                                    <td className="text-right">
+                                        <div className="flex justify-end gap-2">
+                                            <button
+                                                className="btn btn-sm btn-outline"
+                                                onClick={() => {
+                                                    setSelectedEvent(ev);
+                                                    resetEditForm(ev);
+                                                    document.getElementById("edit_modal").showModal();
+                                                }}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                className="btn btn-sm btn-error"
+                                                onClick={() => {
+                                                    setSelectedEvent(ev);
+                                                    document.getElementById("delete_modal").showModal();
+                                                }}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>
 
-            {/* ===================================================== */}
             {/* CREATE EVENT MODAL */}
-            {/* ===================================================== */}
             <dialog id="create_modal" className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box max-w-lg">
                     <h3 className="font-bold text-lg mb-4">Create Event</h3>
-                    <form className="grid grid-cols-1 gap-3">
-                        <input className="input input-bordered" placeholder="Title" />
-                        <textarea className="textarea textarea-bordered" placeholder="Description"></textarea>
-                        <input type="date" className="input input-bordered" />
-                        <input className="input input-bordered" placeholder="Location" />
-                        <label className="label cursor-pointer">
-                            <span className="label-text">Paid Event?</span>
-                            <input type="checkbox" className="toggle toggle-primary" />
-                        </label>
-                        <input type="number" className="input input-bordered" placeholder="Event Fee" />
-                        <input type="number" className="input input-bordered" placeholder="Max Attendees" />
-                    </form>
-                    <div className="modal-action">
-                        <button className="btn btn-primary">Create</button>
-                        <form method="dialog">
-                            <button className="btn">Close</button>
-                        </form>
-                    </div>
-                </div>
-            </dialog>
+                    <form
+                        className="grid grid-cols-1 gap-3"
+                        onSubmit={handleCreateSubmit(onCreateEvent)}
+                    >
+                        <select
+                            className="select select-bordered w-full"
+                            {...createRegister("clubId", { required: true })}
+                            defaultValue={clubs[0]?._id || ""}
+                        >
+                            {clubs.map((club) => (
+                                <option key={club._id} value={club._id}>
+                                    {club.clubName}
+                                </option>
+                            ))}
+                        </select>
 
-            {/* ===================================================== */}
-            {/* EDIT EVENT MODAL */}
-            {/* ===================================================== */}
-            <dialog id="edit_modal" className="modal modal-bottom sm:modal-middle">
-                <div className="modal-box max-w-lg">
-                    <h3 className="font-bold text-lg mb-4">Edit Event</h3>
-                    <form className="grid grid-cols-1 gap-3">
                         <input
                             className="input input-bordered"
-                            defaultValue={selectedEvent?.title}
                             placeholder="Title"
+                            {...createRegister("title", { required: true })}
                         />
                         <textarea
                             className="textarea textarea-bordered"
-                            defaultValue={selectedEvent?.description}
                             placeholder="Description"
-                        ></textarea>
+                            {...createRegister("description", { required: true })}
+                        />
                         <input
                             type="date"
                             className="input input-bordered"
-                            defaultValue={selectedEvent?.date}
+                            {...createRegister("date", { required: true })}
                         />
                         <input
                             className="input input-bordered"
-                            defaultValue={selectedEvent?.location}
                             placeholder="Location"
+                            {...createRegister("location", { required: true })}
                         />
                         <label className="label cursor-pointer">
                             <span className="label-text">Paid Event?</span>
                             <input
                                 type="checkbox"
                                 className="toggle toggle-primary"
-                                defaultChecked={selectedEvent?.isPaid}
+                                {...createRegister("isPaid")}
                             />
                         </label>
                         <input
                             type="number"
                             className="input input-bordered"
-                            defaultValue={selectedEvent?.eventFee}
                             placeholder="Event Fee"
+                            {...createRegister("eventFee")}
                         />
                         <input
                             type="number"
                             className="input input-bordered"
-                            defaultValue={selectedEvent?.maxAttendees}
                             placeholder="Max Attendees"
+                            {...createRegister("maxAttendees", { required: true })}
                         />
+                        <div className="modal-action">
+                            <button className="btn btn-primary">Create</button>
+                            <button
+                                type="button"
+                                className="btn"
+                                onClick={() => document.getElementById("create_modal").close()}
+                            >
+                                Close
+                            </button>
+                        </div>
                     </form>
-                    <div className="modal-action">
-                        <button className="btn btn-primary">Update</button>
-                        <form method="dialog">
-                            <button className="btn">Close</button>
-                        </form>
-                    </div>
                 </div>
             </dialog>
 
-            {/* ===================================================== */}
-            {/* DELETE CONFIRM MODAL */}
-            {/* ===================================================== */}
+            {/* EDIT EVENT MODAL */}
+            <dialog id="edit_modal" className="modal modal-bottom sm:modal-middle">
+                <div className="modal-box max-w-lg">
+                    <h3 className="font-bold text-lg mb-4">Edit Event</h3>
+                    {selectedEvent && (
+                        <form
+                            className="grid grid-cols-1 gap-3"
+                            onSubmit={handleEditSubmit(onEditEvent)}
+                        >
+                            <select
+                                className="select select-bordered w-full"
+                                {...editRegister("clubId", { required: true })}
+                            >
+                                {clubs.map((club) => (
+                                    <option key={club._id} value={club._id}>
+                                        {club.clubName}
+                                    </option>
+                                ))}
+                            </select>
+
+                            <input
+                                className="input input-bordered"
+                                placeholder="Title"
+                                {...editRegister("title", { required: true })}
+                                defaultValue={selectedEvent.title}
+                            />
+                            <textarea
+                                className="textarea textarea-bordered"
+                                placeholder="Description"
+                                {...editRegister("description", { required: true })}
+                                defaultValue={selectedEvent.description}
+                            />
+                            <input
+                                type="date"
+                                className="input input-bordered"
+                                {...editRegister("date", { required: true })}
+                                defaultValue={selectedEvent.date}
+                            />
+                            <input
+                                className="input input-bordered"
+                                placeholder="Location"
+                                {...editRegister("location", { required: true })}
+                                defaultValue={selectedEvent.location}
+                            />
+                            <label className="label cursor-pointer">
+                                <span className="label-text">Paid Event?</span>
+                                <input
+                                    type="checkbox"
+                                    className="toggle toggle-primary"
+                                    {...editRegister("isPaid")}
+                                    defaultChecked={selectedEvent.isPaid}
+                                />
+                            </label>
+                            <input
+                                type="number"
+                                className="input input-bordered"
+                                placeholder="Event Fee"
+                                {...editRegister("eventFee")}
+                                defaultValue={selectedEvent.eventFee}
+                            />
+                            <input
+                                type="number"
+                                className="input input-bordered"
+                                placeholder="Max Attendees"
+                                {...editRegister("maxAttendees", { required: true })}
+                                defaultValue={selectedEvent.maxAttendees}
+                            />
+                            <div className="modal-action">
+                                <button className="btn btn-primary">Update</button>
+                                <button
+                                    type="button"
+                                    className="btn"
+                                    onClick={() => document.getElementById("edit_modal").close()}
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </form>
+                    )}
+                </div>
+            </dialog>
+
+            {/* DELETE MODAL */}
             <dialog id="delete_modal" className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg text-error">Delete Event</h3>
@@ -186,14 +345,20 @@ const EventsManagement = () => {
                         <span className="font-semibold">{selectedEvent?.title}</span>?
                     </p>
                     <div className="modal-action">
-                        <button className="btn btn-error">Delete</button>
-                        <form method="dialog">
-                            <button className="btn">Cancel</button>
-                        </form>
+                        <button className="btn btn-error" onClick={onDeleteEvent}>
+                            Delete
+                        </button>
+                        <button
+                            className="btn"
+                            onClick={() => document.getElementById("delete_modal").close()}
+                        >
+                            Cancel
+                        </button>
                     </div>
                 </div>
             </dialog>
         </div>
     );
-}
-export default EventsManagement
+};
+
+export default EventsManagement;

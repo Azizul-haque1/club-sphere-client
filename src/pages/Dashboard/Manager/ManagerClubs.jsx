@@ -1,31 +1,97 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { MdEdit, MdDelete, MdAdd } from "react-icons/md";
+import useAuth from "../../../hooks/useAuth";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
- export default function ManagerClubs() {
-  const editModalRef = useRef()
-  const createModalRef = useRef()
-  const { data, register, handleSubmit } = useForm()
-  const sampleClub = {
-    clubName: "Photography Club",
-    description: "We capture memories.",
-    location: "Room A3",
-    membershipFee: 40,
-    category: "Art",
-    bannerImage: "https://placehold.co/600x200",
-  };
+export default function ManagerClubs() {
+  const createModalRef = useRef();
+  const editModalRef = useRef();
+  const { user } = useAuth()
+  const axiosSecure = useAxiosSecure()
+  const [clubs, setClubs] = useState([
+    {
+      id: 1,
+      clubName: "Photography Club",
+      description: "We capture memories.",
+      location: "Room A3",
+      membershipFee: 40,
+      category: "Art",
+      bannerImage: "https://placehold.co/600x200",
+    },
+    {
+      id: 2,
+      clubName: "Chess Club",
+      description: "Strategy and fun.",
+      location: "Room B1",
+      membershipFee: 0,
+      category: "Sports",
+      bannerImage: "https://placehold.co/600x200",
+    },
+  ]);
+  const [selectedClub, setSelectedClub] = useState(null);
 
-  const openEditModal = () => {
-    editModalRef.current.showModal()
-  }
+  // Create form
+  const {
+    register: registerCreate,
+    handleSubmit: handleSubmitCreate,
+    // reset: resetCreate,
+  } = useForm();
+
+  // Edit form
+  const {
+    register: registerEdit,
+    handleSubmit: handleSubmitEdit,
+    reset: resetEdit,
+  } = useForm();
 
   const openCreateModal = () => {
-    createModalRef.current.showModal()
-  }
+    // resetCreate();
+    createModalRef.current.showModal();
+  };
+
+  const openEditModal = (club) => {
+    setSelectedClub(club);
+    resetEdit(club); // prefill edit form
+    editModalRef.current.showModal();
+  };
+
+  const handleCreateClub = (data) => {
+    const clubInfo = {
+      clubName: data.clubName,
+      description: data.description,
+      category: data.category,
+      location: data.location,
+      bannerImage: data.bannerImage,
+      membershipFee: Number(data.membershipFee),
+      managerEmail: user.email
+    };
+
+    axiosSecure.post('/clubs', clubInfo)
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch(err => console.log(err));
+    console.log("Club Object:", clubInfo);
+    createModalRef.current.close();
+  };
+
+
+  const handleEditClub = (data) => {
+    setClubs((prev) =>
+      prev.map((c) => (c.id === selectedClub.id ? { ...c, ...data } : c))
+    );
+    editModalRef.current.close();
+    console.log("Updated club:", data);
+  };
+
+  const handleDeleteClub = (id) => {
+    setClubs((prev) => prev.filter((c) => c.id !== id));
+  };
 
   return (
     <div className="p-6">
-      {/* Header */}
+      {/* header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">My Clubs</h1>
 
@@ -38,11 +104,11 @@ import { MdEdit, MdDelete, MdAdd } from "react-icons/md";
         </button>
       </div>
 
-      {/* TABLE */}
+      {/* table */}
       <div className="overflow-x-auto shadow rounded-lg">
         <table className="table w-full">
           <thead className="bg-base-200">
-            <tr className="bg-base-200">
+            <tr>
               <th>Name</th>
               <th>Category</th>
               <th>Fee</th>
@@ -52,194 +118,171 @@ import { MdEdit, MdDelete, MdAdd } from "react-icons/md";
           </thead>
 
           <tbody>
-            <tr>
-              <td className="font-semibold">{sampleClub.clubName}</td>
-              <td>{sampleClub.category}</td>
-              <td>${sampleClub.membershipFee}</td>
-              <td>{sampleClub.location}</td>
-
-              <td className="flex gap-2">
-                {/* Open Edit Modal */}
-                <button
-
-                  className="btn btn-sm btn-warning text-white flex items-center gap-1"
-                  onClick={openEditModal}
-                  type="button"
-                >
-                  <MdEdit /> Edit
-                </button>
-
-                <button className="btn btn-sm btn-error text-white flex items-center gap-1">
-                  <MdDelete /> Delete
-                </button>
-              </td>
-            </tr>
+            {clubs.map((club) => (
+              <tr key={club.id}>
+                <td className="font-semibold">{club.clubName}</td>
+                <td>{club.category}</td>
+                <td>${club.membershipFee}</td>
+                <td>{club.location}</td>
+                <td className="flex gap-2">
+                  <button
+                    className="btn btn-sm btn-warning text-white flex items-center gap-1"
+                    onClick={() => openEditModal(club)}
+                  >
+                    <MdEdit /> Edit
+                  </button>
+                  <button
+                    className="btn btn-sm btn-error text-white flex items-center gap-1"
+                    onClick={() => handleDeleteClub(club.id)}
+                  >
+                    <MdDelete /> Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
 
-
-
-
-
-
-
-      {/* add club modal */}
+      {/* Create Club Modal */}
       <dialog ref={createModalRef} className="modal modal-bottom sm:modal-middle">
         <div className="modal-box max-w-xl">
           <h3 className="text-2xl font-bold mb-4">Create New Club</h3>
-
           <form
             className="space-y-4 body"
-            onSubmit={handleSubmit((data) => console.log("UI only → submit", data))}
+            onSubmit={handleSubmitCreate(handleCreateClub)}
           >
-            <fieldset className="fieldset text-[16px] w-full">
-              {/* Club Name */}
-              <label className="label">Club Name</label>
-              <input
-                type="text"
-                className="input input-bordered w-full"
-                {...register("clubName")}
-              />
+            <label className="label">Club Name</label>
+            <input
+              type="text"
+              className="input input-bordered w-full"
+              {...registerCreate("clubName", { required: true })}
+            />
 
-              {/* Description */}
-              <label className="label">Description</label>
-              <textarea
-                className="textarea textarea-bordered w-full"
-                {...register("description")}
-              ></textarea>
+            <label className="label">Description</label>
+            <textarea
+              className="textarea textarea-bordered w-full"
+              {...registerCreate("description", { required: true })}
+            ></textarea>
 
-              {/* Location */}
-              <label className="label">Location</label>
-              <input
-                type="text"
-                className="input input-bordered w-full"
-                {...register("location")}
-              />
+            <label className="label">Location</label>
+            <input
+              type="text"
+              className="input input-bordered w-full"
+              {...registerCreate("location", { required: true })}
+            />
 
-              {/* Category */}
-              <label className="label">Category</label>
-              <select
-                className="select select-bordered w-full"
-                {...register("category")}
+            <label className="label">Category</label>
+            <select
+              className="select select-bordered w-full"
+              {...registerCreate("category")}
+            >
+              <option>Art</option>
+              <option>Science</option>
+              <option>Sports</option>
+              <option>Technology</option>
+              <option>Culture</option>
+            </select>
+
+            <label className="label">Membership Fee</label>
+            <input
+              type="number"
+              className="input input-bordered w-full"
+              {...registerCreate("membershipFee")}
+            />
+
+            <label className="label">Banner Image URL</label>
+            <input
+              type="text"
+              className="input input-bordered w-full"
+              {...registerCreate("bannerImage")}
+            />
+
+            <div className="text-end mt-4">
+              <button type="submit" className="btn btn-primary mr-4">
+                Create Club
+              </button>
+              <button
+                type="button"
+                onClick={() => createModalRef.current.close()}
+                className="btn"
               >
-                <option>Art</option>
-                <option>Science</option>
-                <option>Sports</option>
-                <option>Technology</option>
-                <option>Culture</option>
-              </select>
-
-              {/* Membership Fee */}
-              <label className="label">Membership Fee</label>
-              <input
-                type="number"
-                className="input input-bordered w-full"
-                {...register("membershipFee")}
-              />
-
-              {/* Banner Image */}
-              <label className="label">Banner Image URL</label>
-              <input
-                type="text"
-                className="input input-bordered w-full"
-                {...register("bannerImage")}
-              />
-
-              <div className="text-end ">
-                <button type="submit" className="btn btn-primary mr-4">
-                  Create Club
-                </button>
-                <button
-                  onClick={() => createModalRef.current.close()}
-                  className="btn">Cancel</button>
-              </div>
-            </fieldset>
+                Cancel
+              </button>
+            </div>
           </form>
-
         </div>
       </dialog>
 
-
-      {/* edit  modal */}
+      {/* Edit Club Modal */}
       <dialog ref={editModalRef} className="modal modal-bottom sm:modal-middle">
         <div className="modal-box max-w-xl">
           <h3 className="text-2xl font-bold mb-4">Edit Club</h3>
-
           <form
             className="space-y-4 body"
-            onSubmit={handleSubmit((data) => console.log("UI only → submit", data))}
+            onSubmit={handleSubmitEdit(handleEditClub)}
           >
-            <fieldset className="fieldset text-[16px] w-full">
-              {/* Club Name */}
-              <label className="label">Club Name</label>
-              <input
-                type="text"
-                className="input input-bordered w-full"
-                {...register("clubName")}
-              />
+            <label className="label">Club Name</label>
+            <input
+              type="text"
+              className="input input-bordered w-full"
+              {...registerEdit("clubName", { required: true })}
+            />
 
-              {/* Description */}
-              <label className="label">Description</label>
-              <textarea
-                className="textarea textarea-bordered w-full"
-                {...register("description")}
-              ></textarea>
+            <label className="label">Description</label>
+            <textarea
+              className="textarea textarea-bordered w-full"
+              {...registerEdit("description", { required: true })}
+            ></textarea>
 
-              {/* Location */}
-              <label className="label">Location</label>
-              <input
-                type="text"
-                className="input input-bordered w-full"
-                {...register("location")}
-              />
+            <label className="label">Location</label>
+            <input
+              type="text"
+              className="input input-bordered w-full"
+              {...registerEdit("location", { required: true })}
+            />
 
-              {/* Category */}
-              <label className="label">Category</label>
-              <select
-                className="select select-bordered w-full"
-                {...register("category")}
+            <label className="label">Category</label>
+            <select
+              className="select select-bordered w-full"
+              {...registerEdit("category")}
+            >
+              <option>Art</option>
+              <option>Science</option>
+              <option>Sports</option>
+              <option>Technology</option>
+              <option>Culture</option>
+            </select>
+
+            <label className="label">Membership Fee</label>
+            <input
+              type="number"
+              className="input input-bordered w-full"
+              {...registerEdit("membershipFee")}
+            />
+
+            <label className="label">Banner Image URL</label>
+            <input
+              type="text"
+              className="input input-bordered w-full"
+              {...registerEdit("bannerImage")}
+            />
+
+            <div className="text-end mt-4">
+              <button type="submit" className="btn btn-primary mr-4">
+                Save Changes
+              </button>
+              <button
+                type="button"
+                onClick={() => editModalRef.current.close()}
+                className="btn"
               >
-                <option>Art</option>
-                <option>Science</option>
-                <option>Sports</option>
-                <option>Technology</option>
-                <option>Culture</option>
-              </select>
-
-              {/* Membership Fee */}
-              <label className="label">Membership Fee</label>
-              <input
-                type="number"
-                className="input input-bordered w-full"
-                {...register("membershipFee")}
-              />
-
-              {/* Banner Image */}
-              <label className="label">Banner Image URL</label>
-              <input
-                type="text"
-                className="input input-bordered w-full"
-                {...register("bannerImage")}
-              />
-
-              <div className="text-end ">
-                <button type="submit" className="btn btn-primary mr-4">
-                  Save Changes
-                </button>
-                <button
-                  onClick={() => editModalRef.current.close()}
-                  className="btn">Cancel</button>
-              </div>
-            </fieldset>
+                Cancel
+              </button>
+            </div>
           </form>
-
-          {/* <form method="dialog" className="modal-action">
-            <button className="btn w-full">Close</button>
-          </form> */}
         </div>
       </dialog>
-
     </div>
   );
 }
