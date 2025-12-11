@@ -1,5 +1,7 @@
 import { useState } from "react";
 import ClubCard from "../../components/ClubCard";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { useQuery } from "@tanstack/react-query";
 
 
 // Dummy clubs data for UI
@@ -55,11 +57,22 @@ const dummyClubs = [
 ];
 
 const Clubs = () => {
+    const axiosSecure = useAxiosSecure()
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("");
 
+    const { data: clubs = [] } = useQuery({
+        queryKey: ['clubs'],
+        queryFn: async () => {
+            const res = await axiosSecure.get(`/clubs?status=approved`)
+            return res.data;
+        }
+    })
+
+
+
     // Basic UI filtering
-    const filteredClubs = dummyClubs.filter((club) => {
+    const filteredClubs = clubs.filter((club) => {
         const matchesSearch = club.clubName
             .toLowerCase()
             .includes(search.toLowerCase());

@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import SocialLogin from '../../../components/shared/SocialLogin';
 import useAuth from '../../../hooks/useAuth';
 
@@ -7,11 +7,15 @@ import useAuth from '../../../hooks/useAuth';
 const Login = () => {
     const { signInUser } = useAuth()
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const location = useLocation()
+    const navigate = useNavigate()
 
     const handleLogin = (data) => {
         signInUser(data.email, data.password)
             .then(res => {
                 console.log(res.user);
+                navigate(location.state || '/')
+
             })
             .catch(err => console.log(err))
 
