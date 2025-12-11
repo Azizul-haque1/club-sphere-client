@@ -1,29 +1,67 @@
-import { Link } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import { Link, useParams } from "react-router";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import Loader from "../../components/shared/Loader";
+import useAuth from "../../hooks/useAuth";
 
 const ClubDetails = () => {
-    // Demo data (later you will replace with real data)
-    const club = {
-        name: "Photography Club",
-        category: "Photography",
-        image:
-            "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f",
-        description:
-            "The Photography Club is a creative space for people who love capturing moments. We organize weekly photo walks, workshops, and competitions to improve your skills and connect with fellow photographers.",
-        location: "Community Center, New York",
-        members: 120,
-        fee: 15,
-        organizer: {
-            name: "Alex Johnson",
-            email: "alex@photo.com",
-        },
-        activities: [
-            "Weekly Photo Walks",
-            "Editing Workshops",
-            "Monthly Competitions",
-            "Guest Photographer Talks",
-        ],
-    };
+    const { id } = useParams()
+    const { user } = useAuth()
+    console.log(id);
+    const axiosSecure = useAxiosSecure()
+    const { data: club, isLoading } = useQuery({
+        queryKey: ['club', id],
+        queryFn: async () => {
+            const res = await axiosSecure(`/clubs/${id}/details`)
+            return res.data;
+        }
 
+    })
+
+    if (isLoading) {
+        return <Loader />
+    }
+    // console.log(clubs);
+    // Demo data (later you will replace with real data)
+    // const club = {
+    //     name: "Photography Club",
+    //     category: "Photography",
+    //     image:
+    //         "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f",
+    //     description:
+    //         "The Photography Club is a creative space for people who love capturing moments. We organize weekly photo walks, workshops, and competitions to improve your skills and connect with fellow photographers.",
+    //     location: "Community Center, New York",
+    //     members: 120,
+    //     fee: 15,
+    //     organizer: {
+    //         name: "Alex Johnson",
+    //         email: "alex@photo.com",
+    //     },
+    //     activities: [
+    //         "Weekly Photo Walks",
+    //         "Editing Workshops",
+    //         "Monthly Competitions",
+    //         "Guest Photographer Talks",
+    //     ],
+    // };
+
+    const handleJoinClub = (club) => {
+        const clubInfo = {
+            _id: club._id,
+            name: user.displayName,
+            clubName: club.clubName,
+            membershipFee: club.membershipFee,
+            email: user.email,
+        }
+
+        console.log(club);
+        axiosSecure.post(`/payment-checkout-session`, clubInfo)
+            .then(res => {
+                console.log(res.data.url);
+                window.location.assign(res.data.url)
+            })
+
+    }
     return (
         <div className="max-w-6xl mx-auto px-4 py-10">
 
@@ -34,20 +72,20 @@ const ClubDetails = () => {
             >
                 ← Back to Clubs
             </Link>
-
             {/* Main Section */}
             <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
-
                 {/* Image */}
+
                 <img
-                    src={club.image}
-                    alt={club.name}
+                    src={club?.bannerImage}
+                    alt={club?.clubName}
                     className="w-full h-[350px] object-cover"
                 />
 
                 <div className="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                     {/* LEFT SIDE */}
+
                     <div className="lg:col-span-2">
 
                         <span className="badge badge-primary mb-3">
@@ -55,7 +93,7 @@ const ClubDetails = () => {
                         </span>
 
                         <h1 className="text-3xl font-bold mb-4">
-                            {club.name}
+                            {club.clubName}
                         </h1>
 
                         <p className="text-gray-600 leading-relaxed mb-6">
@@ -67,7 +105,7 @@ const ClubDetails = () => {
                             Activities
                         </h2>
 
-                        <ul className="space-y-2">
+                        {/* <ul className="space-y-2">
                             {club.activities.map((activity, index) => (
                                 <li
                                     key={index}
@@ -76,7 +114,7 @@ const ClubDetails = () => {
                                     ✅ {activity}
                                 </li>
                             ))}
-                        </ul>
+                        </ul> */}
                     </div>
 
                     {/* RIGHT SIDE */}
@@ -90,17 +128,17 @@ const ClubDetails = () => {
 
                             <p>
                                 📍 <span className="font-semibold">Location:</span>{" "}
-                                {club.location}
+                                {club?.location}
                             </p>
 
-                            <p>
+                            {/* <p>
                                 👥 <span className="font-semibold">Members:</span>{" "}
                                 {club.members}
-                            </p>
+                            </p> */}
 
                             <p>
                                 💰 <span className="font-semibold">Joining Fee:</span>{" "}
-                                ${club.fee}
+                                ${club?.membershipFee}
                             </p>
                         </div>
 
@@ -109,14 +147,16 @@ const ClubDetails = () => {
                             <h4 className="font-semibold mb-2">Organizer</h4>
 
                             <p className="text-gray-600">
-                                {club.organizer.name}
+                                {club?.organizer.displayName}
                             </p>
                             <p className="text-sm text-gray-500">
-                                {club.organizer.email}
+                                {club?.organizer.email}
                             </p>
                         </div>
 
-                        <button className="btn btn-primary w-full mt-6">
+                        <button
+                            onClick={() => handleJoinClub(club)}
+                            className="btn btn-primary w-full mt-6">
                             Join This Club
                         </button>
 

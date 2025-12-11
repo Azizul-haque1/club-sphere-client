@@ -18,6 +18,7 @@ import MyClubs from "../pages/Dashboard/MyClubs";
 import MyEvents from "../pages/Dashboard/Member/MyEvents";
 import Payments from "../pages/Dashboard/Member/Payments";
 import ErrorPage from "../components/ErrorPage";
+import PaymentSuccess from "../pages/PaymentSuccess/PaymentSuccess";
 
 export const route = createBrowserRouter([
     {
@@ -72,6 +73,11 @@ export const route = createBrowserRouter([
             {
                 path: 'payments',
                 Component: Payments,
+            },
+            {
+                path: 'payment-success',
+                Component: PaymentSuccess,
+
             },
 
             // club manager route
