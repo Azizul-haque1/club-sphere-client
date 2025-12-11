@@ -3,32 +3,22 @@ import { useForm } from "react-hook-form";
 import { MdEdit, MdDelete, MdAdd } from "react-icons/md";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { useQuery } from "@tanstack/react-query";
 
 export default function ManagerClubs() {
   const createModalRef = useRef();
   const editModalRef = useRef();
   const { user } = useAuth()
   const axiosSecure = useAxiosSecure()
-  const [clubs, setClubs] = useState([
-    {
-      id: 1,
-      clubName: "Photography Club",
-      description: "We capture memories.",
-      location: "Room A3",
-      membershipFee: 40,
-      category: "Art",
-      bannerImage: "https://placehold.co/600x200",
-    },
-    {
-      id: 2,
-      clubName: "Chess Club",
-      description: "Strategy and fun.",
-      location: "Room B1",
-      membershipFee: 0,
-      category: "Sports",
-      bannerImage: "https://placehold.co/600x200",
-    },
-  ]);
+  const { data: clubs = [] } = useQuery({
+    queryKey: ['clubs', user.email],
+    queryFn: async () => {
+      const res = await axiosSecure(`/clubs/by-creator?email=${user.email}&status=approved`)
+      return res.data
+    }
+  })
+  // console.log(data);
+
   const [selectedClub, setSelectedClub] = useState(null);
 
   // Create form
@@ -78,10 +68,25 @@ export default function ManagerClubs() {
 
 
   const handleEditClub = (data) => {
-    setClubs((prev) =>
-      prev.map((c) => (c.id === selectedClub.id ? { ...c, ...data } : c))
-    );
-    editModalRef.current.close();
+    const updateInfo = {
+      clubName: data.clubName,
+      description: data.description,
+      category: data.category,
+      location: data.location,
+      bannerImage: data.bannerImage,
+      membershipFee: Number(data.membershipFee),
+    }
+
+    console.log(data._id);
+    axiosSecure.patch(`/clubs/${data._id}`, updateInfo)
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch(err => console.log(err))
+
+
+
+
     console.log("Updated club:", data);
   };
 
