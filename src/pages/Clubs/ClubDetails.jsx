@@ -17,8 +17,22 @@ const ClubDetails = () => {
         }
 
     })
+    const { data: membershipInfo, isLoading: membershipLoading } = useQuery({
+        queryKey: ['membershipStatus', id],
+        queryFn: async () => {
+            const res = await axiosSecure.get(`/clubs/${id}/membership-status`)
+            return res.data;
+        }
+    })
 
-    if (isLoading) {
+
+
+    console.log('minfo', membershipInfo);
+
+
+
+
+    if (isLoading || membershipLoading) {
         return <Loader />
     }
     // console.log(clubs);
@@ -99,22 +113,6 @@ const ClubDetails = () => {
                         <p className="text-gray-600 leading-relaxed mb-6">
                             {club.description}
                         </p>
-
-                        {/* Activities */}
-                        <h2 className="text-xl font-semibold mb-3">
-                            Activities
-                        </h2>
-
-                        {/* <ul className="space-y-2">
-                            {club.activities.map((activity, index) => (
-                                <li
-                                    key={index}
-                                    className="flex items-center gap-2 text-gray-600"
-                                >
-                                    ✅ {activity}
-                                </li>
-                            ))}
-                        </ul> */}
                     </div>
 
                     {/* RIGHT SIDE */}
@@ -154,11 +152,22 @@ const ClubDetails = () => {
                             </p>
                         </div>
 
-                        <button
-                            onClick={() => handleJoinClub(club)}
-                            className="btn btn-primary w-full mt-6">
-                            Join This Club
-                        </button>
+                        {membershipInfo.status === "active" ?
+
+
+                            (
+                                <button className="btn btn-success w-full mt-3" disabled>
+                                    ✓ You Are Already a Member
+                                </button>
+
+                            ) : (
+                                <button
+                                    onClick={() => handleJoinClub(club)}
+                                    className="btn btn-primary w-full mt-6">
+                                    Join This Club
+                                </button>
+                            )
+                        }
 
                     </div>
                 </div>
