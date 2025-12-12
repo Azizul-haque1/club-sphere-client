@@ -52,10 +52,8 @@ const EventsManagement = () => {
         watch: watchEditForm,
     } = useForm();
 
-    // -----------------------------
-    // CREATE EVENT HANDLER
-    // -----------------------------
-    const onCreateEvent = (data) => {
+
+    const handleCreateEvent = (data) => {
         const newEvent = {
             ...data,
             id: Date.now().toString(),
@@ -68,10 +66,7 @@ const EventsManagement = () => {
         document.getElementById("create_modal").close();
     };
 
-    // -----------------------------
-    // EDIT EVENT HANDLER
-    // -----------------------------
-    const onEditEvent = (data) => {
+    const handleEditEvent = (data) => {
         setEvents((prev) =>
             prev.map((ev) =>
                 ev.id === selectedEvent.id
@@ -89,10 +84,8 @@ const EventsManagement = () => {
         document.getElementById("edit_modal").close();
     };
 
-    // -----------------------------
-    // DELETE EVENT HANDLER
-    // -----------------------------
-    const onDeleteEvent = () => {
+
+    const handleDeleteEvent = () => {
         setEvents((prev) => prev.filter((ev) => ev.id !== selectedEvent.id));
         document.getElementById("delete_modal").close();
     };
@@ -186,7 +179,7 @@ const EventsManagement = () => {
                     <h3 className="font-bold text-lg mb-4">Create Event</h3>
                     <form
                         className="grid grid-cols-1 gap-3"
-                        onSubmit={handleCreateSubmit(onCreateEvent)}
+                        onSubmit={handleCreateSubmit(handleCreateEvent)}
                     >
                         <select
                             className="select select-bordered w-full"
@@ -261,7 +254,7 @@ const EventsManagement = () => {
                     {selectedEvent && (
                         <form
                             className="grid grid-cols-1 gap-3"
-                            onSubmit={handleEditSubmit(onEditEvent)}
+                            onSubmit={handleEditSubmit(handleEditEvent)}
                         >
                             <select
                                 className="select select-bordered w-full"
@@ -345,7 +338,7 @@ const EventsManagement = () => {
                         <span className="font-semibold">{selectedEvent?.title}</span>?
                     </p>
                     <div className="modal-action">
-                        <button className="btn btn-error" onClick={onDeleteEvent}>
+                        <button className="btn btn-error" onClick={handleDeleteEvent}>
                             Delete
                         </button>
                         <button

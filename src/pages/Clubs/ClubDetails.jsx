@@ -17,48 +17,21 @@ const ClubDetails = () => {
         }
 
     })
-    const { data: membershipInfo, isLoading: membershipLoading } = useQuery({
-        queryKey: ['membershipStatus', id],
+    console.log(user);
+    const { data: membershipInfo = { status: '' }, isLoading: membershipLoading } = useQuery({
+        queryKey: ['membershipStatus', id, user?.email],
         queryFn: async () => {
             const res = await axiosSecure.get(`/clubs/${id}/membership-status`)
-            return res.data;
-        }
+            return res.data || { status: '' };
+        },
+        enabled: !!user,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
     })
-
-
-
-    console.log('minfo', membershipInfo);
-
-
-
 
     if (isLoading || membershipLoading) {
         return <Loader />
     }
-    // console.log(clubs);
-    // Demo data (later you will replace with real data)
-    // const club = {
-    //     name: "Photography Club",
-    //     category: "Photography",
-    //     image:
-    //         "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f",
-    //     description:
-    //         "The Photography Club is a creative space for people who love capturing moments. We organize weekly photo walks, workshops, and competitions to improve your skills and connect with fellow photographers.",
-    //     location: "Community Center, New York",
-    //     members: 120,
-    //     fee: 15,
-    //     organizer: {
-    //         name: "Alex Johnson",
-    //         email: "alex@photo.com",
-    //     },
-    //     activities: [
-    //         "Weekly Photo Walks",
-    //         "Editing Workshops",
-    //         "Monthly Competitions",
-    //         "Guest Photographer Talks",
-    //     ],
-    // };
-
     const handleJoinClub = (club) => {
         const clubInfo = {
             _id: club._id,
@@ -68,12 +41,14 @@ const ClubDetails = () => {
             email: user.email,
         }
 
-        console.log(club);
+        console.log(clubInfo);
         axiosSecure.post(`/payment-checkout-session`, clubInfo)
             .then(res => {
                 console.log(res.data.url);
                 window.location.assign(res.data.url)
             })
+            .catch(err => console.error('error', err)
+            )
 
     }
     return (
