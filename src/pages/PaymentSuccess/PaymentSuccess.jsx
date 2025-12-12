@@ -8,11 +8,7 @@ const PaymentSuccess = () => {
     const axiosSecure = useAxiosSecure()
     const [searchParams] = useSearchParams();
     const [clubData, setClubData] = useState({})
-
-    // Get the session ID from the URL
     const sessionId = searchParams.get("session_id");
-
-    // Optional: Also get data from location.state (club name, amount)
     const { clubName, amount } = location.state || {};
 
     useEffect(() => {
@@ -29,7 +25,6 @@ const PaymentSuccess = () => {
         const timer = setTimeout(() => {
             navigate("/dashboard/my-clubs");
         }, 3000);
-
 
         return () => clearTimeout(timer);
     }, [navigate]);
