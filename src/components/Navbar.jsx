@@ -22,8 +22,8 @@ const Navbar = () => {
 
     const handleLogOut = () => {
         logOut()
-            .then(res => {
-                console.log(res.user);
+            .then(() => {
+                // console.log(res.user);
             }
             )
             .catch(error => console.log(error))
