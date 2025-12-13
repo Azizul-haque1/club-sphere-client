@@ -3,49 +3,66 @@ import { useForm } from "react-hook-form";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
+import Loader from "../../../components/shared/Loader";
+import { data } from "react-router";
 
 const EventsManagement = () => {
-    const [events, setEvents] = useState([
-        {
-            id: "1",
-            clubId: "c101",
-            title: "Photography Workshop",
-            description: "Learn advanced photography techniques.",
-            date: "2025-12-20",
-            location: "Studio Room A",
-            isPaid: true,
-            eventFee: 25,
-            maxAttendees: 30,
-        },
-        {
-            id: "2",
-            clubId: "c102",
-            title: "Hiking Meetup",
-            description: "Weekend hiking trip to the mountains.",
-            date: "2025-12-28",
-            location: "Blue Mountain Trail",
-            isPaid: false,
-            eventFee: 0,
-            maxAttendees: 20,
-        },
-    ]);
+    // const [events, setEvents] = useState([
+    //     {
+    //         id: "1",
+    //         clubId: "c101",
+    //         title: "Photography Workshop",
+    //         description: "Learn advanced photography techniques.",
+    //         date: "2025-12-20",
+    //         location: "Studio Room A",
+    //         isPaid: true,
+    //         eventFee: 25,
+    //         maxAttendees: 30,
+    //     },
+    //     {
+    //         id: "2",
+    //         clubId: "c102",
+    //         title: "Hiking Meetup",
+    //         description: "Weekend hiking trip to the mountains.",
+    //         date: "2025-12-28",
+    //         location: "Blue Mountain Trail",
+    //         isPaid: false,
+    //         eventFee: 0,
+    //         maxAttendees: 20,
+    //     },
+    // ]);
+
     const { user } = useAuth()
     const axiosSecure = useAxiosSecure()
     const createOpenModalRef = useRef()
     const editOpenModalRef = useRef()
-    const { data: clubs } = useQuery({
-        queryKey: ['club-name', user.email],
+    const { data: clubs = [] } = useQuery({
+        queryKey: ['clubs', user.email],
         queryFn: async () => {
             const res = await axiosSecure.get(`/clubs/club-name?email=${user.email}`)
+            console.log('data', res.data);
             return res.data;
         }
     })
 
-    console.log(clubs);
+
+    const [selectedEvent, setSelectedEvent] = useState(null)
+
+
+    const { data: events, isLoading } = useQuery({
+        queryKey: ['events', user?.email],
+        queryFn: async () => {
+            const res = await axiosSecure.get(`/events?email=${user.email}`)
+            return res.data
+        }
+    })
+
+
+    console.log('events', events);
 
 
 
-    const [selectedEvent, setSelectedEvent] = useState(null);
+    // const [selectedEvent, setSelectedEvent] = useState(null);
 
     // React Hook Form for Create
     const {
@@ -62,17 +79,11 @@ const EventsManagement = () => {
         reset: resetEditForm,
         watch: watchEditForm,
     } = useForm();
-
+    if (isLoading) {
+        return <Loader />
+    }
 
     const handleCreateEvent = (data) => {
-        // const newEvent = {
-        //     ...data,
-        //     id: Date.now().toString(),
-        //     isPaid: data.isPaid || false,
-        //     eventFee: data.isPaid ? Number(data.eventFee) : '0',
-        //     maxAttendees: Number(data.maxAttendees),
-        // };
-        // setEvents([...events, newEvent]);
 
         axiosSecure.post(`/event`, data)
             .then(res => {
@@ -88,27 +99,48 @@ const EventsManagement = () => {
 
     };
 
+    const hanldeEditModalShow = (event) => {
+        console.log(event.clubId);
+        editOpenModalRef.current.showModal();
+        // editOpenModalRef.current.resetEditForm()
+        resetEditForm({
+            clubId: String(event.clubId),
+            title: event.title,
+            description: event.description,
+            eventDate: new Date(event.eventDate).toISOString().split("T")[0],
+            location: event.location,
+            isPaid: event.isPaid ?? false,
+            eventFee: event.eventFee ?? 0,
+            maxAttendees: event.maxAttendees,
+        });
+
+        setSelectedEvent(event);
+
+
+
+    }
+
     const handleEditEvent = (data) => {
-        setEvents((prev) =>
-            prev.map((ev) =>
-                ev.id === selectedEvent.id
-                    ? {
-                        ...ev,
-                        ...data,
-                        isPaid: data.isPaid || false,
-                        eventFee: data.isPaid ? Number(data.eventFee) : '0',
-                        maxAttendees: Number(data.maxAttendees),
-                    }
-                    : ev
-            )
-        );
+        // setEvents((prev) =>
+        //     prev.map((ev) =>
+        //         ev.id === selectedEvent.id
+        //             ? {
+        //                 ...ev,
+        //                 ...data,
+        //                 isPaid: data.isPaid || false,
+        //                 eventFee: data.isPaid ? Number(data.eventFee) : '0',
+        //                 maxAttendees: Number(data.maxAttendees),
+        //             }
+        //             : ev
+        //     )
+        // );
         resetEditForm();
         document.getElementById("edit_modal").close();
     };
 
 
     const handleDeleteEvent = () => {
-        setEvents((prev) => prev.filter((ev) => ev.id !== selectedEvent.id));
+        // setEvents((prev) => prev.filter((ev) => ev.id !== selectedEvent.id));
         document.getElementById("delete_modal").close();
     };
 
@@ -140,7 +172,10 @@ const EventsManagement = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {events.length === '0' && (
+
+
+
+                        {events?.length === '0' && (
                             <tr>
                                 <td colSpan={8} className="text-center py-6">
                                     No events found
@@ -148,12 +183,12 @@ const EventsManagement = () => {
                             </tr>
                         )}
                         {events.map((ev) => {
-                            const club = clubs.find((c) => c._id === ev.clubId);
+                            // const club = clubs.find((c) => c._id === ev.clubId);
                             return (
-                                <tr key={ev.id}>
-                                    <td>{club?.clubName}</td>
+                                <tr key={ev._id}>
+                                    <td>{ev.clubName}</td>
                                     <td>{ev.title}</td>
-                                    <td>{ev.date}</td>
+                                    <td>{ev.eventDate}</td>
                                     <td>{ev.location}</td>
                                     <td>
                                         <span
@@ -169,11 +204,7 @@ const EventsManagement = () => {
                                         <div className="flex justify-end gap-2">
                                             <button
                                                 className="btn btn-sm btn-outline"
-                                                onClick={() => {
-                                                    setSelectedEvent(ev);
-                                                    resetEditForm(ev);
-                                                    editOpenModalRef.current.showModal();
-                                                }}
+                                                onClick={() => hanldeEditModalShow(ev)}
                                             >
                                                 Edit
                                             </button>
@@ -195,7 +226,7 @@ const EventsManagement = () => {
                 </table>
             </div>
 
-            {/* CREATE EVENT MODAL */}
+            {/*create event modal */}
             <dialog ref={createOpenModalRef} className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box max-w-lg">
                     <h3 className="font-bold text-lg mb-4">Create Event</h3>
@@ -216,22 +247,22 @@ const EventsManagement = () => {
                         </select>
 
                         <input
-                            className="input input-bordered"
+                            className="input input-bordered w-full"
                             placeholder="Title"
                             {...createRegister("title", { required: true })}
                         />
                         <textarea
-                            className="textarea textarea-bordered"
+                            className="textarea textarea-bordered w-full"
                             placeholder="Description"
                             {...createRegister("description", { required: true })}
                         />
                         <input
                             type="date"
-                            className="input input-bordered"
+                            className="input input-bordered w-full"
                             {...createRegister("eventDate", { required: true })}
                         />
                         <input
-                            className="input input-bordered"
+                            className="input input-bordered w-full"
                             placeholder="Location"
                             {...createRegister("location", { required: true })}
                         />
@@ -245,13 +276,13 @@ const EventsManagement = () => {
                         </label>
                         <input
                             type="number"
-                            className="input input-bordered"
+                            className="input input-bordered w-full"
                             placeholder="Event Fee"
                             {...createRegister("eventFee")}
                         />
                         <input
                             type="number"
-                            className="input input-bordered"
+                            className="input input-bordered w-full"
                             placeholder="Max Attendees"
                             {...createRegister("maxAttendees", { required: true })}
                         />
@@ -269,7 +300,7 @@ const EventsManagement = () => {
                 </div>
             </dialog>
 
-            {/* EDIT EVENT MODAL */}
+            {/* edit modal */}
             <dialog ref={editOpenModalRef} className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box max-w-lg">
                     <h3 className="font-bold text-lg mb-4">Edit Event</h3>
@@ -282,33 +313,38 @@ const EventsManagement = () => {
                                 className="select select-bordered w-full"
                                 {...editRegister("clubId", { required: true })}
                             >
-                                {clubs.map((club) => (
+                                {clubs.map((club) =>
+                                (
                                     <option key={club._id} value={club._id}>
                                         {club.clubName}
                                     </option>
-                                ))}
+                                )
+
+                                )
+
+                                }
                             </select>
 
                             <input
-                                className="input input-bordered"
+                                className="input input-bordered w-full"
                                 placeholder="Title"
                                 {...editRegister("title", { required: true })}
                                 defaultValue={selectedEvent.title}
                             />
                             <textarea
-                                className="textarea textarea-bordered"
+                                className="textarea textarea-bordered w-full"
                                 placeholder="Description"
                                 {...editRegister("description", { required: true })}
                                 defaultValue={selectedEvent.description}
                             />
                             <input
                                 type="date"
-                                className="input input-bordered"
+                                className="input input-bordered w-full"
                                 {...editRegister("date", { required: true })}
-                                defaultValue={selectedEvent.date}
+                                defaultValue={new Date(selectedEvent.eventDate).toISOString().split("T")[0]}
                             />
                             <input
-                                className="input input-bordered"
+                                className="input input-bordered w-full"
                                 placeholder="Location"
                                 {...editRegister("location", { required: true })}
                                 defaultValue={selectedEvent.location}
@@ -324,14 +360,14 @@ const EventsManagement = () => {
                             </label>
                             <input
                                 type="number"
-                                className="input input-bordered"
+                                className="input input-bordered w-full"
                                 placeholder="Event Fee"
                                 {...editRegister("eventFee")}
                                 defaultValue={selectedEvent.eventFee}
                             />
                             <input
                                 type="number"
-                                className="input input-bordered"
+                                className="input input-bordered w-full"
                                 placeholder="Max Attendees"
                                 {...editRegister("maxAttendees", { required: true })}
                                 defaultValue={selectedEvent.maxAttendees}
@@ -351,7 +387,7 @@ const EventsManagement = () => {
                 </div>
             </dialog>
 
-            {/* DELETE MODAL */}
+            {/* delete modal */}
             <dialog id="delete_modal" className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg text-error">Delete Event</h3>
