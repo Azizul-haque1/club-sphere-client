@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { useQuery } from "@tanstack/react-query";
+import useAuth from "../../../hooks/useAuth";
 
 const EventsManagement = () => {
     const [events, setEvents] = useState([
@@ -26,12 +29,20 @@ const EventsManagement = () => {
             maxAttendees: 20,
         },
     ]);
+    const { user } = useAuth()
+    const axiosSecure = useAxiosSecure()
+    const createOpenModalRef = useRef()
+    const editOpenModalRef = useRef()
+    const { data: clubs } = useQuery({
+        queryKey: ['club-name', user.email],
+        queryFn: async () => {
+            const res = await axiosSecure.get(`/clubs/club-name?email=${user.email}`)
+            return res.data;
+        }
+    })
 
-    // Example clubs for reference
-    const clubs = [
-        { _id: "c101", clubName: "Photography Club" },
-        { _id: "c102", clubName: "Hiking Club" },
-    ];
+    console.log(clubs);
+
 
 
     const [selectedEvent, setSelectedEvent] = useState(null);
@@ -54,16 +65,27 @@ const EventsManagement = () => {
 
 
     const handleCreateEvent = (data) => {
-        const newEvent = {
-            ...data,
-            id: Date.now().toString(),
-            isPaid: data.isPaid || false,
-            eventFee: data.isPaid ? Number(data.eventFee) : '0',
-            maxAttendees: Number(data.maxAttendees),
-        };
-        setEvents([...events, newEvent]);
+        // const newEvent = {
+        //     ...data,
+        //     id: Date.now().toString(),
+        //     isPaid: data.isPaid || false,
+        //     eventFee: data.isPaid ? Number(data.eventFee) : '0',
+        //     maxAttendees: Number(data.maxAttendees),
+        // };
+        // setEvents([...events, newEvent]);
+
+        axiosSecure.post(`/event`, data)
+            .then(res => {
+                console.log(res.data);
+
+            })
+            .catch(err => console.log(err))
+
+
         resetCreateForm();
-        document.getElementById("create_modal").close();
+
+        console.log('club data', data);
+
     };
 
     const handleEditEvent = (data) => {
@@ -97,7 +119,7 @@ const EventsManagement = () => {
             {/* CREATE BUTTON */}
             <button
                 className="btn btn-primary mb-4"
-                onClick={() => document.getElementById("create_modal").showModal()}
+                onClick={() => createOpenModalRef.current.showModal()}
             >
                 Create Event
             </button>
@@ -150,7 +172,7 @@ const EventsManagement = () => {
                                                 onClick={() => {
                                                     setSelectedEvent(ev);
                                                     resetEditForm(ev);
-                                                    document.getElementById("edit_modal").showModal();
+                                                    editOpenModalRef.current.showModal();
                                                 }}
                                             >
                                                 Edit
@@ -174,7 +196,7 @@ const EventsManagement = () => {
             </div>
 
             {/* CREATE EVENT MODAL */}
-            <dialog id="create_modal" className="modal modal-bottom sm:modal-middle">
+            <dialog ref={createOpenModalRef} className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box max-w-lg">
                     <h3 className="font-bold text-lg mb-4">Create Event</h3>
                     <form
@@ -206,7 +228,7 @@ const EventsManagement = () => {
                         <input
                             type="date"
                             className="input input-bordered"
-                            {...createRegister("date", { required: true })}
+                            {...createRegister("eventDate", { required: true })}
                         />
                         <input
                             className="input input-bordered"
@@ -238,7 +260,7 @@ const EventsManagement = () => {
                             <button
                                 type="button"
                                 className="btn"
-                                onClick={() => document.getElementById("create_modal").close()}
+                                onClick={() => createOpenModalRef.current.close()}
                             >
                                 Close
                             </button>
@@ -248,7 +270,7 @@ const EventsManagement = () => {
             </dialog>
 
             {/* EDIT EVENT MODAL */}
-            <dialog id="edit_modal" className="modal modal-bottom sm:modal-middle">
+            <dialog ref={editOpenModalRef} className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box max-w-lg">
                     <h3 className="font-bold text-lg mb-4">Edit Event</h3>
                     {selectedEvent && (
@@ -319,7 +341,7 @@ const EventsManagement = () => {
                                 <button
                                     type="button"
                                     className="btn"
-                                    onClick={() => document.getElementById("edit_modal").close()}
+                                    onClick={() => editOpenModalRef.current.close()}
                                 >
                                     Close
                                 </button>
