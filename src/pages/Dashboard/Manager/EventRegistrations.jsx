@@ -1,27 +1,42 @@
 import React from "react";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { useQuery } from "@tanstack/react-query";
+import useAuth from "../../../hooks/useAuth";
 
 export default function EventRegistrations() {
+    const axiosSecure = useAxiosSecure()
+    const { user } = useAuth();
+
+    const { data: registrations = [] } = useQuery({
+        queryKey: ['registrations', user.email],
+        queryFn: async () => {
+            const res = await axiosSecure(`/my-clubs/event-registrations?email=${user.email}`)
+            return res.data
+        }
+    })
+
+
     // Sample registration data
-    const registrations = [
-        {
-            id: "1",
-            userEmail: "alice@example.com",
-            status: "registered",
-            registeredAt: "2025-12-01 10:15",
-        },
-        {
-            id: "2",
-            userEmail: "bob@example.com",
-            status: "cancelled",
-            registeredAt: "2025-12-02 14:30",
-        },
-        {
-            id: "3",
-            userEmail: "charlie@example.com",
-            status: "registered",
-            registeredAt: "2025-12-03 09:45",
-        },
-    ];
+    // const registrations = [
+    //     {
+    //         id: "1",
+    //         userEmail: "alice@example.com",
+    //         status: "registered",
+    //         registeredAt: "2025-12-01 10:15",
+    //     },
+    //     {
+    //         id: "2",
+    //         userEmail: "bob@example.com",
+    //         status: "cancelled",
+    //         registeredAt: "2025-12-02 14:30",
+    //     },
+    //     {
+    //         id: "3",
+    //         userEmail: "charlie@example.com",
+    //         status: "registered",
+    //         registeredAt: "2025-12-03 09:45",
+    //     },
+    // ];
 
     return (
         <div className="p-6">
@@ -39,7 +54,7 @@ export default function EventRegistrations() {
 
                     <tbody>
                         {registrations.map((reg) => (
-                            <tr key={reg.id}>
+                            <tr key={reg._id}>
                                 <td>{reg.userEmail}</td>
                                 <td>
                                     <span

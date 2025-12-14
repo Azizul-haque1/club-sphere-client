@@ -50,7 +50,7 @@ const ClubMembers = () => {
                                 </thead>
                                 <tbody>
                                     {/* Member Row */}
-                                    {
+                                    {club.members.length > 0 ?
                                         club.members.map(m => <tr key={m._id}>
                                             <td>{m.name}</td>
                                             <td>{m.email}</td>
@@ -77,6 +77,7 @@ const ClubMembers = () => {
                                             </td>
                                         </tr>
                                         )
+                                        : ''
                                     }
                                 </tbody>
                             </table>

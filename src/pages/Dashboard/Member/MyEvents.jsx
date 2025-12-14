@@ -1,24 +1,19 @@
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAuth from "../../../hooks/useAuth";
 
 const MyEvents = () => {
-
-    const events = [
-        {
-            id: "1",
-            title: "Photography Workshop",
-            clubName: "Photography Club",
-            date: "2025-12-15 10:00",
-            status: "registered",
+    const axiosSecure = useAxiosSecure()
+    const { user } = useAuth()
+    const { data: events } = useQuery({
+        queryKey: ['events'],
+        queryFn: async () => {
+            const res = await axiosSecure.get('/my-events')
+            return res.data
         },
-        {
-            id: "2",
-            title: "Chess Tournament",
-            clubName: "Chess Club",
-            date: "2025-12-20 14:00",
-            status: "cancelled",
-        },
-    ];
-
+        enabled: !!user,
+    })
     return (
         <div className="p-6">
             <h1 className="text-3xl font-bold mb-6">My Events</h1>
@@ -35,11 +30,13 @@ const MyEvents = () => {
                     </thead>
 
                     <tbody>
-                        {events.map((event) => (
+                        {events?.map((event) => (
                             <tr key={event.id}>
                                 <td>{event.title}</td>
                                 <td>{event.clubName}</td>
-                                <td>{event.date}</td>
+                                <td>{
+                                    new Date(event.date).toLocaleDateString()
+                                }</td>
                                 <td>
                                     <span
                                         className={`badge ${event.status === "registered"
@@ -49,7 +46,7 @@ const MyEvents = () => {
                                                 : "badge-warning"
                                             }`}
                                     >
-                                        {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
+                                        {event.status}
                                     </span>
                                 </td>
                             </tr>

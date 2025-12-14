@@ -10,7 +10,7 @@ export default function ManagerClubs() {
   const editModalRef = useRef();
   const { user } = useAuth()
   const axiosSecure = useAxiosSecure()
-  const { data: clubs = [] } = useQuery({
+  const { data: clubs = [], refetch } = useQuery({
     queryKey: ['clubs', user.email],
     queryFn: async () => {
       const res = await axiosSecure(`/clubs/by-creator?email=${user.email}&status=approved`)
@@ -81,6 +81,8 @@ export default function ManagerClubs() {
     axiosSecure.patch(`/clubs/${data._id}`, updateInfo)
       .then(res => {
         console.log(res.data);
+        refetch()
+        editModalRef.current.close()
       })
       .catch(err => console.log(err))
 

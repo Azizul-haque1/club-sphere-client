@@ -3,11 +3,12 @@ import { Link, useParams } from "react-router";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Loader from "../../components/shared/Loader";
 import useAuth from "../../hooks/useAuth";
+import ClubEvents from "../../components/ClubEvents";
 
 const ClubDetails = () => {
     const { id } = useParams()
     const { user } = useAuth()
-    console.log(id);
+    // console.log(id);
     const axiosSecure = useAxiosSecure()
     const { data: club, isLoading } = useQuery({
         queryKey: ['club', id],
@@ -17,17 +18,19 @@ const ClubDetails = () => {
         }
 
     })
-    console.log(user);
-    const { data: membershipInfo = { status: '' }, isLoading: membershipLoading } = useQuery({
-        queryKey: ['membershipStatus', id, user?.email],
-        queryFn: async () => {
-            const res = await axiosSecure.get(`/clubs/${id}/membership-status`)
-            return res.data || { status: '' };
-        },
-        enabled: !!user,
-        refetchOnMount: true,
-        refetchOnWindowFocus: true,
-    })
+
+    // console.log(club);
+    const { data: membershipInfo = { status: '' }, isLoading: membershipLoading } =
+        useQuery({
+            queryKey: ['membershipStatus', id, user?.email],
+            queryFn: async () => {
+                const res = await axiosSecure.get(`/clubs/${id}/membership-status`);
+                return res.data || { status: '' };
+            },
+            enabled: !!user,
+        });
+
+
 
     if (isLoading || membershipLoading) {
         return <Loader />
@@ -147,6 +150,12 @@ const ClubDetails = () => {
                     </div>
                 </div>
             </div>
+
+
+            {
+                membershipInfo.status === "active" &&
+                <ClubEvents clubId={club._id} />
+            }
         </div>
     );
 };
