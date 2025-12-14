@@ -1,32 +1,43 @@
+import { useQuery } from '@tanstack/react-query';
 import React from 'react';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
 const Payments = () => {
-    const payments = [
-        {
-            id: "1",
-            amount: 40,
-            type: "Membership",
-            clubName: "Photography Club",
-            date: "2025-12-01",
-            status: "completed",
-        },
-        {
-            id: "2",
-            amount: 30,
-            type: "Membership",
-            clubName: "Chess Club",
-            date: "2025-11-15",
-            status: "failed",
-        },
-        {
-            id: "3",
-            amount: 20,
-            type: "Event",
-            clubName: "Chess Club",
-            date: "2025-12-05",
-            status: "completed",
-        },
-    ];
+    const axiosSecure = useAxiosSecure()
+    const { data: payments = [] } = useQuery({
+        queryKey: ['my-paymentns"'],
+        queryFn: async () => {
+            const res = await axiosSecure.get('/my-paymentns')
+            return res.data
+        }
+    })
+    // console.log(data);
+    // const payments = [
+    //     {
+    //         id: "1",
+    //         amount: 40,
+    //         type: "Membership",
+    //         clubName: "Photography Club",
+    //         date: "2025-12-01",
+    //         status: "completed",
+    //     },
+    //     {
+    //         id: "2",
+    //         amount: 30,
+    //         type: "Membership",
+    //         clubName: "Chess Club",
+    //         date: "2025-11-15",
+    //         status: "failed",
+    //     },
+    //     {
+    //         id: "3",
+    //         amount: 20,
+    //         type: "Event",
+    //         clubName: "Chess Club",
+    //         date: "2025-12-05",
+    //         status: "completed",
+    //     },
+    // ];
 
     return (
         <div className="p-6">
@@ -36,9 +47,9 @@ const Payments = () => {
                 <table className="table w-full">
                     <thead className="bg-base-200">
                         <tr>
-                            <th>Amount</th>
+                            <th>Club Name</th>
                             <th>Type</th>
-                            <th>Club</th>
+                            <th>Amount</th>
                             <th>Date</th>
                             <th>Status</th>
                         </tr>
@@ -47,9 +58,9 @@ const Payments = () => {
                     <tbody>
                         {payments.map((payment) => (
                             <tr key={payment.id}>
-                                <td>${payment.amount.toFixed(2)}</td>
-                                <td>{payment.type}</td>
                                 <td>{payment.clubName}</td>
+                                <td>{payment.type}</td>
+                                <td>${payment.amount.toFixed(2)}</td>
                                 <td>{payment.date}</td>
                                 <td>
                                     <span

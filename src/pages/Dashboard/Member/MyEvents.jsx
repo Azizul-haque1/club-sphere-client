@@ -6,14 +6,16 @@ import useAuth from "../../../hooks/useAuth";
 const MyEvents = () => {
     const axiosSecure = useAxiosSecure()
     const { user } = useAuth()
-    const { data: events } = useQuery({
-        queryKey: ['events'],
+    const { data: events = [] } = useQuery({
+        queryKey: ['my-events'],
         queryFn: async () => {
             const res = await axiosSecure.get('/my-events')
             return res.data
         },
         enabled: !!user,
     })
+
+
     return (
         <div className="p-6">
             <h1 className="text-3xl font-bold mb-6">My Events</h1>
@@ -58,7 +60,11 @@ const MyEvents = () => {
                                     You have not registered for any events.
                                 </td>
                             </tr>
-                        )}
+                        )
+
+
+
+                        }
                     </tbody>
                 </table>
             </div>
