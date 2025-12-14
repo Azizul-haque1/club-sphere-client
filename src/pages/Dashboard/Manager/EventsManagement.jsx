@@ -47,9 +47,9 @@ const EventsManagement = () => {
 
 
     const [selectedEvent, setSelectedEvent] = useState(null)
+    // console.log('selectedevnt', selectedEvent);
 
-
-    const { data: events, isLoading } = useQuery({
+    const { data: events, isLoading, refetch } = useQuery({
         queryKey: ['events', user?.email],
         queryFn: async () => {
             const res = await axiosSecure.get(`/events?email=${user.email}`)
@@ -58,7 +58,7 @@ const EventsManagement = () => {
     })
 
 
-    console.log('events', events);
+    // console.log('events', events);
 
 
 
@@ -100,7 +100,7 @@ const EventsManagement = () => {
     };
 
     const hanldeEditModalShow = (event) => {
-        console.log(event.clubId);
+        // console.log(event.clubId);
         editOpenModalRef.current.showModal();
         // editOpenModalRef.current.resetEditForm()
         resetEditForm({
@@ -120,22 +120,28 @@ const EventsManagement = () => {
 
     }
 
-    const handleEditEvent = (data) => {
-        // setEvents((prev) =>
-        //     prev.map((ev) =>
-        //         ev.id === selectedEvent.id
-        //             ? {
-        //                 ...ev,
-        //                 ...data,
-        //                 isPaid: data.isPaid || false,
-        //                 eventFee: data.isPaid ? Number(data.eventFee) : '0',
-        //                 maxAttendees: Number(data.maxAttendees),
-        //             }
-        //             : ev
-        //     )
-        // );
-        resetEditForm();
-        document.getElementById("edit_modal").close();
+    const handleUpdateEvent = (data) => {
+        console.log('WCW', data);
+        const eventInfo = {
+            clubId: data.clubId,
+            title: data.title,
+            description: data.description,
+            eventDate: data.eventDate,
+            location: data.location,
+            isPaid: data.isPaid,
+            eventFee: Number(data.eventFee) || 0,
+            maxAttendees: Number(data.maxAttendees) || 0,
+            createdAt: data.date
+        };
+
+        axiosSecure.patch(`/events/${selectedEvent._id}`, eventInfo)
+            .then(res => {
+                console.log(res.data);
+                refetch()
+            })
+            .catch(err => console.log(err))
+        resetEditForm(eventInfo);
+        editOpenModalRef.current.close();
     };
 
 
@@ -204,7 +210,7 @@ const EventsManagement = () => {
                                         <div className="flex justify-end gap-2">
                                             <button
                                                 className="btn btn-sm btn-outline"
-                                                onClick={() => hanldeEditModalShow(ev)}
+                                                onClick={() => hanldeEditModalShow({ ...ev })}
                                             >
                                                 Edit
                                             </button>
@@ -307,7 +313,7 @@ const EventsManagement = () => {
                     {selectedEvent && (
                         <form
                             className="grid grid-cols-1 gap-3"
-                            onSubmit={handleEditSubmit(handleEditEvent)}
+                            onSubmit={handleEditSubmit(handleUpdateEvent)}
                         >
                             <select
                                 className="select select-bordered w-full"
@@ -331,6 +337,9 @@ const EventsManagement = () => {
                                 {...editRegister("title", { required: true })}
                                 defaultValue={selectedEvent.title}
                             />
+                            <span className=" hidden"
+                                {...editRegister('_id')}
+                            >{selectedEvent._id}</span>
                             <textarea
                                 className="textarea textarea-bordered w-full"
                                 placeholder="Description"
@@ -385,10 +394,10 @@ const EventsManagement = () => {
                         </form>
                     )}
                 </div>
-            </dialog>
+            </dialog >
 
             {/* delete modal */}
-            <dialog id="delete_modal" className="modal modal-bottom sm:modal-middle">
+            <dialog dialog id="delete_modal" className="modal modal-bottom sm:modal-middle" >
                 <div className="modal-box">
                     <h3 className="font-bold text-lg text-error">Delete Event</h3>
                     <p className="py-4">
@@ -407,8 +416,8 @@ const EventsManagement = () => {
                         </button>
                     </div>
                 </div>
-            </dialog>
-        </div>
+            </dialog >
+        </div >
     );
 };
 
