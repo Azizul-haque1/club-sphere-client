@@ -34,13 +34,14 @@ const EventsManagement = () => {
 
     const { user } = useAuth()
     const axiosSecure = useAxiosSecure()
-    const createOpenModalRef = useRef()
-    const editOpenModalRef = useRef()
+    const createModalRef = useRef()
+    const editModalRef = useRef()
+    const deleteModalRef = useRef()
     const { data: clubs = [] } = useQuery({
         queryKey: ['clubs', user.email],
         queryFn: async () => {
             const res = await axiosSecure.get(`/clubs/club-name?email=${user.email}`)
-            console.log('data', res.data);
+            // console.log('data', res.data);
             return res.data;
         }
     })
@@ -88,6 +89,7 @@ const EventsManagement = () => {
         axiosSecure.post(`/event`, data)
             .then(res => {
                 console.log(res.data);
+                refetch()
 
             })
             .catch(err => console.log(err))
@@ -101,7 +103,7 @@ const EventsManagement = () => {
 
     const hanldeEditModalShow = (event) => {
         // console.log(event.clubId);
-        editOpenModalRef.current.showModal();
+        editModalRef.current.showModal();
         // editOpenModalRef.current.resetEditForm()
         resetEditForm({
             clubId: String(event.clubId),
@@ -141,13 +143,27 @@ const EventsManagement = () => {
             })
             .catch(err => console.log(err))
         resetEditForm(eventInfo);
-        editOpenModalRef.current.close();
+        editModalRef.current.close();
     };
 
 
+
+    const handleDeleteModalShow = (ev) => {
+        deleteModalRef.current.showModal()
+        setSelectedEvent(ev)
+        // console.log(_id);
+        // setSelectedEvent({ _id })
+    }
     const handleDeleteEvent = () => {
-        // setEvents((prev) => prev.filter((ev) => ev.id !== selectedEvent.id));
-        document.getElementById("delete_modal").close();
+
+        axiosSecure.delete(`/events/${selectedEvent._id}`)
+            .then(res => {
+                console.log(res.data);
+                refetch()
+                deleteModalRef.current.close()
+
+            })
+            .catch(err => console.log(err))
     };
 
     return (
@@ -157,7 +173,7 @@ const EventsManagement = () => {
             {/* CREATE BUTTON */}
             <button
                 className="btn btn-primary mb-4"
-                onClick={() => createOpenModalRef.current.showModal()}
+                onClick={() => createModalRef.current.showModal()}
             >
                 Create Event
             </button>
@@ -216,10 +232,8 @@ const EventsManagement = () => {
                                             </button>
                                             <button
                                                 className="btn btn-sm btn-error"
-                                                onClick={() => {
-                                                    setSelectedEvent(ev);
-                                                    document.getElementById("delete_modal").showModal();
-                                                }}
+                                                onClick={() => handleDeleteModalShow({ ...ev })
+                                                }
                                             >
                                                 Delete
                                             </button>
@@ -233,7 +247,7 @@ const EventsManagement = () => {
             </div>
 
             {/*create event modal */}
-            <dialog ref={createOpenModalRef} className="modal modal-bottom sm:modal-middle">
+            <dialog ref={createModalRef} className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box max-w-lg">
                     <h3 className="font-bold text-lg mb-4">Create Event</h3>
                     <form
@@ -297,7 +311,7 @@ const EventsManagement = () => {
                             <button
                                 type="button"
                                 className="btn"
-                                onClick={() => createOpenModalRef.current.close()}
+                                onClick={() => createModalRef.current.close()}
                             >
                                 Close
                             </button>
@@ -307,7 +321,7 @@ const EventsManagement = () => {
             </dialog>
 
             {/* edit modal */}
-            <dialog ref={editOpenModalRef} className="modal modal-bottom sm:modal-middle">
+            <dialog ref={editModalRef} className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box max-w-lg">
                     <h3 className="font-bold text-lg mb-4">Edit Event</h3>
                     {selectedEvent && (
@@ -386,7 +400,7 @@ const EventsManagement = () => {
                                 <button
                                     type="button"
                                     className="btn"
-                                    onClick={() => editOpenModalRef.current.close()}
+                                    onClick={() => editModalRef.current.close()}
                                 >
                                     Close
                                 </button>
@@ -397,7 +411,7 @@ const EventsManagement = () => {
             </dialog >
 
             {/* delete modal */}
-            <dialog dialog id="delete_modal" className="modal modal-bottom sm:modal-middle" >
+            <dialog dialog ref={deleteModalRef} className="modal modal-bottom sm:modal-middle" >
                 <div className="modal-box">
                     <h3 className="font-bold text-lg text-error">Delete Event</h3>
                     <p className="py-4">
@@ -410,7 +424,7 @@ const EventsManagement = () => {
                         </button>
                         <button
                             className="btn"
-                            onClick={() => document.getElementById("delete_modal").close()}
+                            onClick={() => deleteModalRef.current.close()}
                         >
                             Cancel
                         </button>
