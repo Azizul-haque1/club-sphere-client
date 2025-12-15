@@ -16,28 +16,6 @@ export default function EventRegistrations() {
     })
 
 
-    // Sample registration data
-    // const registrations = [
-    //     {
-    //         id: "1",
-    //         userEmail: "alice@example.com",
-    //         status: "registered",
-    //         registeredAt: "2025-12-01 10:15",
-    //     },
-    //     {
-    //         id: "2",
-    //         userEmail: "bob@example.com",
-    //         status: "cancelled",
-    //         registeredAt: "2025-12-02 14:30",
-    //     },
-    //     {
-    //         id: "3",
-    //         userEmail: "charlie@example.com",
-    //         status: "registered",
-    //         registeredAt: "2025-12-03 09:45",
-    //     },
-    // ];
-
     return (
         <div className="p-6">
             <h1 className="text-3xl font-bold mb-6">Event Registrations</h1>

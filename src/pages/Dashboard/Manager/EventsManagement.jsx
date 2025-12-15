@@ -47,6 +47,7 @@ const EventsManagement = () => {
     })
 
 
+
     const [selectedEvent, setSelectedEvent] = useState(null)
     // console.log('selectedevnt', selectedEvent);
 

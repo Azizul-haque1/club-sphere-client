@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import Loader from "./shared/Loader";
 import useAuth from "../hooks/useAuth";
@@ -7,7 +7,7 @@ import useAxiosSecure from "../hooks/useAxiosSecure";
 const ClubEvents = ({ clubId }) => {
     const axiosSecure = useAxiosSecure();
     const { user } = useAuth();
-    const queryClient = useQueryClient();
+
 
     // Fetch club events
     const { data: events = [], isLoading } = useQuery({
@@ -19,7 +19,7 @@ const ClubEvents = ({ clubId }) => {
     });
 
 
-    const { data: registrations = [], } = useQuery({
+    const { data: registrations = [], refetch } = useQuery({
         queryKey: ["myRegistrations"],
         queryFn: async () => {
             if (!user) return [];
@@ -39,9 +39,12 @@ const ClubEvents = ({ clubId }) => {
         axiosSecure.post(`/events/${event._id}/register`, e)
             .then(res => {
                 console.log(res.data);
+                refetch()
+
             })
             .catch(err => console.log(err))
     };
+
 
     const handleCancel = async (event) => {
         axiosSecure.patch(`/events/${event._id}/cancel`)
@@ -60,41 +63,82 @@ const ClubEvents = ({ clubId }) => {
     }
 
     return (
-        <div className="mt-10 grid md:grid-cols-2 gap-6">
-            {events.map(event => {
-                const registration = registrations.find(r => r.eventId === event._id);
-                const isRegistered = registration?.status === "registered";
-                return (
-                    <div key={event._id} className="card bg-base-100 shadow-md p-5">
-                        <h3 className="text-xl font-bold">{event.title}</h3>
-                        <p className="text-sm text-gray-500">{new Date(event.eventDate).toLocaleDateString()}</p>
-                        <p className="mt-2">{event.description}</p>
+        <div className="">
 
-                        {isRegistered ? (
-                            <button
-                                onClick={() => handleCancel(event)}
-                                className="btn btn-warning mt-4"
-                            >
-                                Cancel Registration
-                            </button>
-                        ) : event.isPaid ? (
-                            <button
-                                onClick={() => handleRegister(event)}
-                                className="btn btn-primary mt-4"
-                            >
-                                Join Event – ${event.eventFee}
-                            </button>
-                        ) : (
-                            <button
-                                onClick={() => handleRegister(event)}
-                                className="btn btn-success mt-4"
-                            >
-                                Free Event – Register
-                            </button>
-                        )}
-                    </div>
-                );
-            })}
+            {/* Section Heading */}
+            <div className="mt-6 mb-8">
+                <h2 className="text-3xl font-bold text-base-content">
+                    Club Events                </h2>
+                <p className="text-gray-500 mt-1">
+                    Explore events and manage your registrations
+                </p>
+            </div>
+
+            {/* Events Grid */}
+            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
+                {events.map(event => {
+                    const registration = registrations.find(
+                        r => r.eventId === event._id
+                    );
+                    const isRegistered = registration?.status === "registered";
+
+                    return (
+                        <div
+                            key={event._id}
+                            className="card bg-base-100 shadow-lg hover:shadow-xl transition-all duration-300 border border-base-200"
+                        >
+                            <div className="card-body p-6">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <h3 className="text-xl font-bold">
+                                            {event.title}
+                                        </h3>
+                                        <p className="text-sm text-gray-500 mt-1">
+                                            📅 {new Date(event.eventDate).toLocaleDateString()}
+                                        </p>
+                                    </div>
+
+                                    {isRegistered && (
+                                        <span className="badge badge-success badge-outline">
+                                            Registered
+                                        </span>
+                                    )}
+                                </div>
+
+                                <p className="mt-3 text-gray-600 leading-relaxed">
+                                    {event.description}
+                                </p>
+
+                                <div className="mt-6">
+                                    {isRegistered ? (
+                                        <button
+                                            onClick={() => handleCancel(event)}
+                                            className="btn btn-warning btn-outline w-full"
+                                        >
+                                            Cancel Registration
+                                        </button>
+                                    ) : event.isPaid ? (
+                                        <button
+                                            onClick={() => handleRegister(event)}
+                                            className="btn btn-primary w-full"
+                                        >
+                                            Join Event – ${event.eventFee}
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={() => handleRegister(event)}
+                                            className="btn btn-success w-full"
+                                        >
+                                            Free Event – Register
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+
         </div>
     );
 };

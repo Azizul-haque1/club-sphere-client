@@ -57,7 +57,7 @@ const Payments = () => {
 
                     <tbody>
                         {payments.map((payment) => (
-                            <tr key={payment.id}>
+                            <tr key={payment._id}>
                                 <td>{payment.clubName}</td>
                                 <td>{payment.type}</td>
                                 <td>${payment.amount.toFixed(2)}</td>

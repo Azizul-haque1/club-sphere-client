@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Loader from "../../components/shared/Loader";
 import useAuth from "../../hooks/useAuth";
@@ -8,6 +8,7 @@ import ClubEvents from "../../components/ClubEvents";
 const ClubDetails = () => {
     const { id } = useParams()
     const { user } = useAuth()
+    const naviagte = useNavigate()
     // console.log(id);
     const axiosSecure = useAxiosSecure()
     const { data: club, isLoading } = useQuery({
@@ -58,12 +59,12 @@ const ClubDetails = () => {
         <div className="max-w-6xl mx-auto px-4 py-10">
 
             {/* Back Button */}
-            <Link
+            <span onClick={() => naviagte(-1)}
                 to="/clubs"
                 className="text-blue-600 font-medium mb-6 inline-block"
             >
                 ← Back to Clubs
-            </Link>
+            </span>
             {/* Main Section */}
             <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
                 {/* Image */}

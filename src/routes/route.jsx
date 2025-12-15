@@ -19,6 +19,8 @@ import MyEvents from "../pages/Dashboard/Member/MyEvents";
 import Payments from "../pages/Dashboard/Member/Payments";
 import ErrorPage from "../components/ErrorPage";
 import PaymentSuccess from "../pages/PaymentSuccess/PaymentSuccess";
+import Events from "../pages/Events/Events";
+import EventDetails from "../pages/Events/EventDetails";
 
 export const route = createBrowserRouter([
     {
@@ -34,9 +36,24 @@ export const route = createBrowserRouter([
                 Component: Clubs,
 
             },
+
             {
                 path: 'club-details/:id',
-                Component: ClubDetails,
+                element: <PrivateRoute>
+                    <ClubDetails></ClubDetails>
+                </PrivateRoute>
+
+            },
+            {
+                path: 'events',
+                Component: Events
+
+            },
+            {
+                path: 'events/event-details/:id',
+                element: <PrivateRoute>
+                    <EventDetails />
+                </PrivateRoute>
 
             },
             {
