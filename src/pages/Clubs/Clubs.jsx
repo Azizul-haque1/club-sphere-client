@@ -3,6 +3,7 @@ import ClubCard from "../../components/ClubCard";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../../components/shared/Loader";
+import useAxios from "../../hooks/useAxios";
 
 
 // Dummy clubs data for UI
@@ -59,13 +60,14 @@ const dummyClubs = [
 
 const Clubs = () => {
     const axiosSecure = useAxiosSecure()
+    const axiosInstance = useAxios()
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("");
 
     const { data: clubs = [], isLoading } = useQuery({
         queryKey: ['clubs'],
         queryFn: async () => {
-            const res = await axiosSecure.get(`/clubs?status=approved`)
+            const res = await axiosInstance.get(`/clubs?status=approved`)
             return res.data;
         }
     })
@@ -76,18 +78,18 @@ const Clubs = () => {
 
 
 
-    // Basic UI filtering
-    const filteredClubs = clubs.filter((club) => {
-        const matchesSearch = club.clubName
-            .toLowerCase()
-            .includes(search.toLowerCase());
+    // // Basic UI filtering
+    // const filteredClubs = clubs.filter((club) => {
+    //     const matchesSearch = club.clubName
+    //         .toLowerCase()
+    //         .includes(search.toLowerCase());
 
-        const matchesCategory = category
-            ? club.category === category
-            : true;
+    //     const matchesCategory = category
+    //         ? club.category === category
+    //         : true;
 
-        return matchesSearch && matchesCategory;
-    });
+    //     return matchesSearch && matchesCategory;
+    // });
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-10">
@@ -126,9 +128,9 @@ const Clubs = () => {
             </div>
 
             {/* ===== Clubs Grid ===== */}
-            {filteredClubs.length > 0 ? (
+            {clubs.length > 0 ? (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredClubs.map((club) => (
+                    {clubs.map((club) => (
                         <ClubCard key={club._id} club={club} />
                     ))}
                 </div>

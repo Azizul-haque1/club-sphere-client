@@ -78,7 +78,7 @@ const MemberHome = () => {
                     <div>
                         <p className="text-gray-500 text-sm">Total Clubs Joined</p>
                         <h2 className="text-2xl font-bold text-gray-800">
-                            {clubs[0].totalClubs}
+                            {clubs[0]?.totalClubs}
                         </h2>
                     </div>
                 </div>
@@ -91,7 +91,7 @@ const MemberHome = () => {
                     <div>
                         <p className="text-gray-500 text-sm">Events Registered</p>
                         <h2 className="text-2xl font-bold text-gray-800">
-                            {events[0].totalEvents}
+                            {events[0]?.totalEvents}
                         </h2>
                     </div>
                 </div>

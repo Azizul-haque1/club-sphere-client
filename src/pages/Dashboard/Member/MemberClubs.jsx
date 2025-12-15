@@ -50,7 +50,7 @@ const MyClubs = () => {
         <div className="p-6 max-w-6xl mx-auto">
             <h2 className="text-3xl text-primary font-bold mb-6">My Clubs</h2>
 
-            {myClubs.length === 0 && <p>You have not joined any clubs yet.</p>}
+            {myClubs?.length === 0 && <p>You have not joined any clubs yet.</p>}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {myClubs?.map((club) => {

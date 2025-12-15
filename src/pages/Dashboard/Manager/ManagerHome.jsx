@@ -1,15 +1,25 @@
 import React from 'react';
 import { FaUniversity, FaUsers } from "react-icons/fa";
 import { MdEvent, MdPayment } from "react-icons/md";
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import { useQuery } from '@tanstack/react-query';
+import Loader from '../../../components/shared/Loader';
 
 const ManagerHome = () => {
-    // Dummy data (replace with API data)
-    const summary = {
-        clubs: 2,
-        members: 128,
-        events: 12,
-        payments: 4500,
-    };
+
+    const axiosSecure = useAxiosSecure()
+    const { data: overview = {}, isLoading } = useQuery({
+        queryKey: ['overview'],
+        queryFn: async () => {
+            const res = await axiosSecure('/manager/overview')
+            return res.data;
+        }
+    })
+
+    console.log(overview);
+    if (isLoading) {
+        return <Loader />
+    }
 
     return (
         <div className="p-6 max-w-6xl mx-auto">
@@ -34,7 +44,7 @@ const ManagerHome = () => {
                     <div>
                         <p className="text-gray-500 text-sm">Clubs Managed</p>
                         <h2 className="text-2xl font-bold text-gray-800">
-                            {summary.clubs}
+                            {overview.totalClubs}
                         </h2>
                     </div>
                 </div>
@@ -47,7 +57,7 @@ const ManagerHome = () => {
                     <div>
                         <p className="text-gray-500 text-sm">Total Members</p>
                         <h2 className="text-2xl font-bold text-gray-800">
-                            {summary.members}
+                            {overview.totalMembers}
                         </h2>
                     </div>
                 </div>
@@ -60,7 +70,7 @@ const ManagerHome = () => {
                     <div>
                         <p className="text-gray-500 text-sm">Events Created</p>
                         <h2 className="text-2xl font-bold text-gray-800">
-                            {summary.events}
+                            {overview.totalEvents}
                         </h2>
                     </div>
                 </div>
@@ -73,7 +83,7 @@ const ManagerHome = () => {
                     <div>
                         <p className="text-gray-500 text-sm">Payments Received</p>
                         <h2 className="text-2xl font-bold text-gray-800">
-                            ${summary.payments}
+                            ${overview.totalPayments}
                         </h2>
                     </div>
                 </div>
