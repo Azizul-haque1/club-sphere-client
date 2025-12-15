@@ -47,8 +47,8 @@ const MyClubs = () => {
     // ];
 
     return (
-        <div className="p-6">
-            <h2 className="text-3xl font-bold mb-6">My Clubs</h2>
+        <div className="p-6 max-w-6xl mx-auto">
+            <h2 className="text-3xl text-primary font-bold mb-6">My Clubs</h2>
 
             {myClubs.length === 0 && <p>You have not joined any clubs yet.</p>}
 

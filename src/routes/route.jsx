@@ -21,6 +21,7 @@ import ErrorPage from "../components/ErrorPage";
 import PaymentSuccess from "../pages/PaymentSuccess/PaymentSuccess";
 import Events from "../pages/Events/Events";
 import EventDetails from "../pages/Events/EventDetails";
+import Profile from "../pages/Profile/Profile";
 
 export const route = createBrowserRouter([
     {
@@ -30,6 +31,11 @@ export const route = createBrowserRouter([
             {
                 index: true,
                 Component: Home
+            },
+            {
+                path: 'clubs',
+                Component: Clubs,
+
             },
             {
                 path: 'clubs',
@@ -86,6 +92,10 @@ export const route = createBrowserRouter([
             {
                 path: 'my-events',
                 Component: MyEvents,
+            },
+            {
+                path: 'profile',
+                Component: Profile,
             },
             {
                 path: 'payments',

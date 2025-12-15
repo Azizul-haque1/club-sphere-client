@@ -17,10 +17,10 @@ const MyEvents = () => {
 
 
     return (
-        <div className="p-6">
-            <h1 className="text-3xl font-bold mb-6">My Events</h1>
+        <div className="p-6 max-w-6xl mx-auto">
+            <h1 className="text-3xl font-bold mb-6 text-primary">My Events</h1>
 
-            <div className="overflow-x-auto shadow rounded-lg">
+            <div div className="overflow-x-auto shadow rounded-lg" >
                 <table className="table w-full">
                     <thead className="bg-base-200">
                         <tr>
@@ -67,8 +67,8 @@ const MyEvents = () => {
                         }
                     </tbody>
                 </table>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 
