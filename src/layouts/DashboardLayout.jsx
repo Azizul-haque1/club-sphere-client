@@ -6,9 +6,11 @@ import { GrUserManager } from "react-icons/gr";
 import { MdAppRegistration, MdEvent, MdGroups, MdPayment } from "react-icons/md";
 import Logo from '../components/shared/Logo';
 import { FaUniversity, FaUsers } from "react-icons/fa";
+import useAuth from '../hooks/useAuth';
 
 const DashboardLayout = () => {
     const { role, roleLoading } = useRole();
+    const { user } = useAuth()
     const location = useLocation();
     const currentPath = location.pathname;
 
@@ -28,15 +30,40 @@ const DashboardLayout = () => {
                 {/* Drawer content */}
                 <div className="drawer-content">
                     {/* Navbar */}
-                    <nav className="navbar w-full bg-base-300">
-                        <label htmlFor="my-drawer-4" aria-label="open sidebar" className="btn btn-square btn-ghost">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="my-1.5 inline-block size-4">
-                                <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
-                                <path d="M9 4v16"></path>
-                                <path d="M14 10l2 2l-2 2"></path>
-                            </svg>
-                        </label>
-                        <div className="px-4">Navbar Title</div>
+                    <nav className="navbar w-full bg-primary/3 px-6 py-3 shadow-primary/80 rounded-r-xl flex justify-between items-center">
+                        {/* Left: Drawer toggle + title */}
+                        <div className="flex items-center gap-4">
+                            <label htmlFor="my-drawer-4" aria-label="open sidebar" className="btn btn-square btn-ghost">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-6 h-6">
+                                    <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+                                    <path d="M9 4v16"></path>
+                                    <path d="M14 10l2 2l-2 2"></path>
+                                </svg>
+                            </label>
+                            <span className="text-2xl font-bold text-gray-800">Dashboard</span>
+                        </div>
+
+                        {/* Right: Profile & dropdown */}
+                        <div className="flex items-center gap-3">
+                            <div className="dropdown dropdown-end">
+                                <label tabIndex={0} className="flex items-center gap-2 cursor-pointer">
+                                    <div className="text-right">
+                                        <p className="text-sm font-medium text-gray-700">{user.displayName}</p>
+                                        <p className="text-xs text-gray-500">{role}</p>
+                                    </div>
+                                    <div className="avatar">
+                                        <div className="w-10 h-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden">
+                                            <img src={user.photoURL || "https://i.pravatar.cc/100"} alt="Profile" />
+                                        </div>
+                                    </div>
+                                </label>
+                                <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-40 mt-2">
+                                    <li><a href="#">Profile</a></li>
+                                    <li><a href="#">Settings</a></li>
+                                    <li><a href="#">Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
                     </nav>
 
                     {/* Main content */}
@@ -46,7 +73,7 @@ const DashboardLayout = () => {
                 {/* Drawer sidebar */}
                 <div className="drawer-side is-drawer-close:overflow-visible">
                     <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
-                    <div className="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
+                    <div className="flex min-h-full flex-col items-start bg-primary/3 is-drawer-close:w-14 is-drawer-open:w-64">
                         {/* Added flex-col gap for spacing */}
                         <ul className="menu w-full grow flex flex-col gap-3">
                             {/* Logo */}
