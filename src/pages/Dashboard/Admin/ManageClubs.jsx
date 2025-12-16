@@ -63,8 +63,8 @@ const ManageClubs = () => {
 
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Manage Clubs</h1>
+    <div className="p-6 max-w-7xl mx-auto">
+      <h1 className="text-3xl font-bold text-primary mb-4">Manage Clubs</h1>
 
       <div className="overflow-x-auto ">
         <table className="table w-full border border-gray-300">

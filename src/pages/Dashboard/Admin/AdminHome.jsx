@@ -1,3 +1,4 @@
+
 import React from "react";
 import { FaUsers, FaUniversity } from "react-icons/fa";
 import { MdEvent, MdPayment } from "react-icons/md";
@@ -10,40 +11,38 @@ import {
     ResponsiveContainer,
 } from "recharts";
 
-
-
-// const axiosSecure = useAxiosSecure()
-// useEffect(() => {
-//     axiosSecure('/usesr/test')
-//         .then(res => {
-//             console.log(res.data);
-//         })
-// }, [axiosSecure])
+import useAdminStats from "../../../hooks/useAdminStats";
+import Loader from "../../../components/shared/Loader";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const AdminHome = () => {
-    /* =====================
-       DUMMY DATA (FINAL)
-    ====================== */
-    const summary = {
-        users: 520,
-        clubs: {
-            total: 24,
-            approved: 17,
-            pending: 5,
-            rejected: 2,
-        },
-        memberships: 860,
-        events: 96,
-        payments: 18750,
-    };
+    const { data, isLoading } = useAdminStats();
+    const axiosSecure = useAxiosSecure()
+    const { data: barData } = useQuery({
+        queryKey: ['members-count'],
+        queryFn: async () => {
+            const res = await axiosSecure.get('/admin/clubs/members-count')
+            return res.data;
+        }
+    })
 
-    const membershipsPerClub = [
-        { club: "Computer Club", members: 140 },
-        { club: "Robotics Club", members: 110 },
-        { club: "Cultural Club", members: 95 },
-        { club: "Sports Club", members: 130 },
-        { club: "Photography Club", members: 75 },
-    ];
+    console.log('bar', barData);
+
+
+
+    if (isLoading) {
+        return <Loader />
+    }
+
+    const { users, clubs, memberships, events, payments } = data;
+
+
+    console.log({ users, clubs, memberships, events, payments });
+
+    console.log('per data', data);
+
+
 
     return (
         <div className="p-6 max-w-7xl mx-auto">
@@ -63,70 +62,105 @@ const AdminHome = () => {
                 <Card
                     icon={<FaUsers size={24} />}
                     label="Total Users"
-                    value={summary.users}
+                    value={users.totoalUser}
                     color="primary"
                 />
 
                 <Card
                     icon={<FaUniversity size={24} />}
                     label="Total Clubs"
-                    value={summary.clubs.total}
-                    subText={`✔ ${summary.clubs.approved} | ⏳ ${summary.clubs.pending} | ✖ ${summary.clubs.rejected}`}
+                    value={clubs.total}
+                    subText={`✔ ${clubs.approved} | ⏳ ${clubs.pending} | ✖ ${clubs.rejected}`}
                     color="secondary"
                 />
 
                 <Card
                     icon={<FaUsers size={24} />}
                     label="Memberships"
-                    value={summary.memberships}
+                    value={memberships.totalMemberships}
                     color="primary"
                 />
 
                 <Card
                     icon={<MdEvent size={26} />}
                     label="Events"
-                    value={summary.events}
+                    value={events.totalEvents}
                     color="secondary"
                 />
 
                 <Card
                     icon={<MdPayment size={26} />}
                     label="Payments"
-                    value={`$${summary.payments}`}
+                    value={`$${payments.totalPayments}`}
                     color="primary"
                 />
             </div>
 
-            {/* Chart */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-xl font-semibold text-gray-700 mb-4">
-                    Memberships per Club
-                </h2>
-
-                <div className="h-80 w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={membershipsPerClub}>
-                            <XAxis dataKey="club" />
-                            <YAxis />
-                            <Tooltip />
-                            <Bar
-                                dataKey="members"
-                                fill="#4f46e5"
-                                radius={[6, 6, 0, 0]}
-                            />
-                        </BarChart>
-                    </ResponsiveContainer>
+            {/* Memberships Per Club Chart */}
+            <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-5">
+                    <h2 className="text-lg font-semibold text-gray-800">
+                        Memberships per Club
+                    </h2>
+                    <span className="text-sm text-gray-500">
+                        Active members
+                    </span>
                 </div>
+
+                {/* Chart */}
+                {barData?.length ? (
+                    <div className="h-80 w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                                data={barData}
+                                margin={{ top: 10, right: 20, left: 0, bottom: 40 }}
+                            >
+                                <XAxis
+                                    dataKey="club"
+                                    tick={{ fontSize: 12 }}
+                                    interval={0}
+                                    angle={-20}
+                                    textAnchor="end"
+                                />
+                                <YAxis
+                                    tick={{ fontSize: 12 }}
+                                    allowDecimals={false}
+                                />
+                                <Tooltip
+                                    cursor={{ fill: "#eef2ff" }}
+                                    contentStyle={{
+                                        borderRadius: "10px",
+                                        border: "none",
+                                        boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+                                    }}
+                                />
+                                <Bar
+                                    dataKey="members"
+                                    fill="#a3dba3"
+                                    radius={[8, 8, 0, 0]}
+                                    barSize={40}
+                                />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                ) : (
+                    <div className="h-80 flex items-center justify-center text-gray-400">
+                        No membership data available
+                    </div>
+                )}
             </div>
+
         </div>
     );
 };
 
+
+
+
 export default AdminHome;
 
-/* =====================
-   Reusable Card
-====================== */
+
 const Card = ({ icon, label, value, subText, color }) => (
     <div className="bg-white rounded-2xl shadow-md p-6 flex items-center gap-4 hover:scale-105 transition-all duration-300">
         <div
