@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import axios from "axios";
 import Loader from "../../../components/shared/Loader";
+import toast from "react-hot-toast";
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -39,6 +40,7 @@ const Register = () => {
 
             if (res.data.insertedId) {
                 console.log("User created in database");
+                toast.success('Register successfully')
                 navigate(location.state ? location.state : "/");
             }
 
@@ -50,8 +52,8 @@ const Register = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
-            <div className="card bg-white/20 w-full mx-auto max-w-md shadow-2xl p-6">
+        <div className="flex justify-center items-center min-h-screen">
+            <div className="card bg-white/20 w-full mx-auto max-w-md shadow-xl border border-base-200 p-6">
                 <h3 className="text-3xl text-center text-primary font-semibold mb-4">
                     Welcome to Club Sphere
                 </h3>

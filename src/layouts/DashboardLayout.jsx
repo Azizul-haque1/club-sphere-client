@@ -10,11 +10,19 @@ import useAuth from '../hooks/useAuth';
 
 const DashboardLayout = () => {
     const { role, roleLoading } = useRole();
-    const { user } = useAuth()
+    const { user, logOut } = useAuth()
     const location = useLocation();
     const currentPath = location.pathname;
 
-    // Polished active link helper with smooth transition and scale
+
+    const handleLogOut = () => {
+        logOut()
+            .then(() => {
+                // console.log(res.user);
+            }
+            )
+            .catch(error => console.log(error))
+    }
     const isActive = (path) =>
         currentPath === path
             ? "bg-primary text-white rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105"
@@ -53,14 +61,16 @@ const DashboardLayout = () => {
                                     </div>
                                     <div className="avatar">
                                         <div className="w-10 h-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden">
-                                            <img src={user.photoURL || "https://i.pravatar.cc/100"} alt="Profile" />
+                                            <img
+                                                referrerPolicy=' no-referrer'
+                                                src={user.photoURL || "https://i.pravatar.cc/100"} alt="Profile" />
                                         </div>
                                     </div>
                                 </label>
                                 <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-40 mt-2">
                                     <li><Link to='/dashboard/profile'>Profile</Link></li>
                                     <li><a href="#">Settings</a></li>
-                                    <li><a href="#">Logout</a></li>
+                                    <li><button onClick={handleLogOut}>Logout</button></li>
                                 </ul>
                             </div>
                         </div>
@@ -167,18 +177,8 @@ const DashboardLayout = () => {
                                 </li>
                             </>}
 
-                            {/* Settings */}
-                            <li>
-                                <button className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Settings">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor" className="my-1.5 inline-block size-4">
-                                        <path d="M20 7h-9"></path>
-                                        <path d="M14 17H5"></path>
-                                        <circle cx="17" cy="17" r="3"></circle>
-                                        <circle cx="7" cy="7" r="3"></circle>
-                                    </svg>
-                                    <span className="is-drawer-close:hidden">Settings</span>
-                                </button>
-                            </li>
+
+
                         </ul>
                     </div>
                 </div>

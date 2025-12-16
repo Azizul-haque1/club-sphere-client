@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import Login from "../pages/Auth/Login/Login";
 import RootLayout from "../layouts/RootLayout";
-import Home from "../pages/Home/Home";
+
 import Register from "../pages/Auth/Register/Register";
 import Clubs from "../pages/Clubs/Clubs";
 import ClubDetails from "../pages/Clubs/ClubDetails";
@@ -22,6 +22,7 @@ import PaymentSuccess from "../pages/PaymentSuccess/PaymentSuccess";
 import Events from "../pages/Events/Events";
 import EventDetails from "../pages/Events/EventDetails";
 import Profile from "../pages/Profile/Profile";
+import Home from "../pages/Home/Home/Home";
 
 export const route = createBrowserRouter([
     {

@@ -1,8 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 const Logo = () => {
-    return <p className="text-2xl text-secondary  font-bold">Club<span className='text-primary'>Sphere</span>
-    </p>
+    return <Link to={'/'} className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Club<span className='text-primary'>Sphere</span>
+    </Link>
 
 };
 

@@ -2,9 +2,11 @@ import React from 'react';
 import useAuth from '../hooks/useAuth';
 import { Link, NavLink } from 'react-router';
 import Logo from './shared/Logo';
+import useRole from '../hooks/useRole';
 
 const Navbar = () => {
     const { user, logOut } = useAuth();
+    const { role } = useRole()
 
     const links = <>
 
@@ -59,18 +61,22 @@ const Navbar = () => {
                 <div className="navbar-end">
                     {user ? (
                         <div className="dropdown dropdown-end">
-                            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-                                <div className="w-10 rounded-full">
-                                    <img
-                                        alt="User Avatar"
-                                        referrerPolicy='no-referrer'
-                                        src={user?.photoURL || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"}
-                                    />
+                            <label tabIndex={0} className="flex items-center gap-2 cursor-pointer">
+                                <div className="text-right">
+                                    <p className="text-sm font-medium text-gray-700">{user.displayName}</p>
+                                    <p className="text-xs text-gray-500">{role}</p>
                                 </div>
-                            </div>
+                                <div className="avatar">
+                                    <div className="w-10 h-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden">
+                                        <img
+                                            referrerPolicy=' no-referrer'
+                                            src={user.photoURL || "https://i.pravatar.cc/100"} alt="Profile" />
+                                    </div>
+                                </div>
+                            </label>
                             <ul tabIndex="-1" className="menu menu-sm dropdown-content bg-base-100 rounded-box shadow-lg mt-3 w-52 p-2">
                                 <li><Link to="/dashboard/profile">Profile</Link></li>
-                                <li><Link to="/settings">Settings</Link></li>
+
                                 <li>
                                     <button onClick={handleLogOut} className="w-full text-left">Logout</button>
                                 </li>
@@ -81,7 +87,7 @@ const Navbar = () => {
 
                         <>
 
-                            <Link to="/register" className="btn btn-secondary btn-outline">Register</Link>
+                            <Link to="/register" className="btn md:flex hidden btn-secondary btn-outline">Register</Link>
                             <Link to="/login" className="btn btn-primary ml-2">Login</Link>
 
                         </>

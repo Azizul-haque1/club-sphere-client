@@ -33,28 +33,12 @@ const MemberHome = () => {
         }
     })
     // console.log('my', myUpcoming);
-    console.log('club', clubs);
+    // console.log('club', clubs);
 
-    console.log('ev', events);
+    // console.log('ev', events);
     if (isLoading || evnetsLoading || upcomingLoading) {
         return <Loader />
     }
-
-
-    // const upcomingEvents = [
-    //     {
-    //         id: 1,
-    //         title: "Tech Talk 2025",
-    //         date: "Sep 20, 2025",
-    //         club: "Computer Club",
-    //     },
-    //     {
-    //         id: 2,
-    //         title: "Robotics Workshop",
-    //         date: "Sep 25, 2025",
-    //         club: "Robotics Club",
-    //     },
-    // ];
 
     return (
         <div className="p-6 max-w-6xl mx-auto">

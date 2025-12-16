@@ -14,9 +14,9 @@ const ClubMembers = () => {
         }
     })
 
-    console.log('club members', clubsMembers);
+    // console.log('club members', clubsMembers);
 
-    console.log(clubsMembers);
+    // console.log(clubsMembers);
     const handleExpired = (membershipId) => {
         console.log(membershipId);
         axiosSecure.patch(`/membership/${membershipId}/status`,)
@@ -50,34 +50,44 @@ const ClubMembers = () => {
                                 </thead>
                                 <tbody>
                                     {/* Member Row */}
-                                    {club.members.length > 0 ?
-                                        club.members.map(m => <tr key={m._id}>
-                                            <td>{m.name}</td>
-                                            <td>{m.email}</td>
-                                            <td>
+                                    {
+                                        club.members.map(m =>
 
-                                                {
-                                                    m.status === 'active' ? (<span className="badge badge-success">{m.status}</span>
-                                                    ) : (<span className="badge badge-error">{m.status}</span>
-                                                    )
-                                                }                                            </td>
-                                            <td>{new Date(m.joinDate).toLocaleDateString()}</td>
-                                            <td className="text-right">
-                                                {
-                                                    m.status === 'expired' ? (
-                                                        <span className='text-gray-300'>Already expired</span>
-                                                    ) : (
-                                                        <button
-                                                            onClick={() => handleExpired(m.membershipId)}
-                                                            className="btn btn-sm btn-warning">
-                                                            Set Expired
-                                                        </button>
-                                                    )
-                                                }
-                                            </td>
-                                        </tr>
+                                            <tr key={m._id}>
+                                                <td>{m.name}</td>
+                                                <td>{m.email}</td>
+                                                <td>
+
+                                                    {m.email ?
+                                                        m.status === 'active' ? (<span className="badge badge-success">{m.status}</span>
+                                                        ) : (<span className="badge badge-error">{m.status}</span>
+                                                        )
+                                                        : ''
+                                                    }                                            </td>
+                                                <td>{
+                                                m.email  ?
+                                                new Date(m.joinDate).toLocaleDateString()
+                                                    :''
+                                                    }</td>
+                                                <td className="text-right">
+                                                    {
+                                                        m.email ?
+                                                            m.status === 'expired' ? (
+                                                                <span className='text-gray-300'>Already expired</span>
+                                                            ) : (
+                                                                <button
+                                                                    onClick={() => handleExpired(m.membershipId)}
+                                                                    className="btn btn-sm btn-warning">
+                                                                    Set Expired
+                                                                </button>
+                                                            )
+                                                            : ''
+                                                    }
+                                                </td>
+                                            </tr>
+
                                         )
-                                        : ''
+
                                     }
                                 </tbody>
                             </table>

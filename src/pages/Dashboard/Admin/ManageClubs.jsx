@@ -47,7 +47,7 @@ const ManageClubs = () => {
               const capitalizedStatus = status.charAt(0).toUpperCase() + status.slice(1);
               Swal.fire({
                 title: `${capitalizedStatus}d Successfully`,
-                text: `The club "${club.name}" has been ${status}d.`
+                text: `The club "${club.clubName}" has been ${status}d.`
               });
             }
           })

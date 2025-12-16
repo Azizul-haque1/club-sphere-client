@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { Link, useLocation, useNavigate } from 'react-router';
 import SocialLogin from '../../../components/shared/SocialLogin';
 import useAuth from '../../../hooks/useAuth';
+import toast from 'react-hot-toast';
 
 
 const Login = () => {
@@ -14,6 +15,7 @@ const Login = () => {
         signInUser(data.email, data.password)
             .then(res => {
                 console.log(res.user);
+                toast.success('login successfully')
                 navigate(location.state || '/')
 
             })
@@ -22,8 +24,8 @@ const Login = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
-            <div className="card bg-white/20 w-full max-w-md mx-4 py-10 shadow-xl rounded-lg p-6">
+        <div className="flex justify-center items-center min-h-screen ">
+            <div className="card bg-white/20 w-full max-w-md mx-4 py-10 shadow-xl border border-base-200 rounded-lg p-6">
                 <h3 className="text-3xl text-center text-primary font-semibold mb-4">Welcome Back</h3>
                 <p className="text-center text-neutral mb-6">Please login to continue</p>
 

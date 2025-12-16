@@ -46,7 +46,7 @@ const AdminHome = () => {
 
     return (
         <div className="p-6 max-w-7xl mx-auto">
-            {/* Header */}
+
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-primary">
                     Admin Overview
@@ -56,7 +56,7 @@ const AdminHome = () => {
                 </p>
             </div>
 
-            {/* Summary Cards */}
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
 
                 <Card
@@ -96,7 +96,7 @@ const AdminHome = () => {
                 />
             </div>
 
-            {/* Memberships Per Club Chart */}
+
             <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-5">

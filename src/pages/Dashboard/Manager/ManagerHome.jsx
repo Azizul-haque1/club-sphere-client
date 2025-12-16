@@ -16,7 +16,7 @@ const ManagerHome = () => {
         }
     })
 
-    console.log(overview);
+    // console.log(overview);
     if (isLoading) {
         return <Loader />
     }

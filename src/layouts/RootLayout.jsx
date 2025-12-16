@@ -1,18 +1,23 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
 import { Outlet } from 'react-router';
+import Footer from '../components/Footer';
 
 const RootLayout = () => {
     return (
-        <div className='max-w-7xl mx-auto bg-primary/3'>
+        <div className='max-w-7xl mx-auto'>
 
             <Navbar></Navbar>
-            <main>
+            <main className='min-h-screen'>
 
+                <Outlet />
 
             </main>
-            <Outlet />
             {/* <Footer /> */}
+            <footer className='mt-10'>
+
+                <Footer />
+            </footer>
 
         </div>
     );

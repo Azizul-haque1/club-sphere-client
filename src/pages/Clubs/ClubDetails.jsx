@@ -4,6 +4,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Loader from "../../components/shared/Loader";
 import useAuth from "../../hooks/useAuth";
 import ClubEvents from "../../components/ClubEvents";
+import toast from "react-hot-toast";
 
 const ClubDetails = () => {
     const { id } = useParams()
@@ -21,7 +22,7 @@ const ClubDetails = () => {
     })
 
     // console.log(club);
-    const { data: membershipInfo = { status: '' }, isLoading: membershipLoading } =
+    const { data: membershipInfo = { status: '' }, isLoading: membershipLoading, refetch } =
         useQuery({
             queryKey: ['membershipStatus', id, user?.email],
             queryFn: async () => {
@@ -50,9 +51,31 @@ const ClubDetails = () => {
             .then(res => {
                 console.log(res.data.url);
                 window.location.assign(res.data.url)
+                refetch()
             })
             .catch(err => console.error('error', err)
             )
+
+    }
+
+    const hadlelJoinFreeClub = (club) => {
+        const memberInfo = {
+            userEmail: user.email,
+            clubId: club._id,
+            status: "active",
+            paymentStatus: 'free',
+            paymentId: '',
+            joinedAt: new Date(),
+        };
+
+        axiosSecure.post('/free-clubs/membershsip', memberInfo)
+            .then(res => {
+                console.log(res.data);
+                refetch()
+                toast.success(club.clubName + ' joined successfully')
+            })
+            .catch(err => console.log(err))
+        console.log(memberInfo);
 
     }
     return (
@@ -140,11 +163,18 @@ const ClubDetails = () => {
                                 </button>
 
                             ) : (
-                                <button
+
+
+                                club.membershipFee !== 0 ? <button
                                     onClick={() => handleJoinClub(club)}
                                     className="btn btn-primary w-full mt-6">
                                     Join This Club
                                 </button>
+                                    : <button
+                                        onClick={() => hadlelJoinFreeClub(club)}
+                                        className="btn btn-primary w-full mt-6">
+                                        Join Free
+                                    </button>
                             )
                         }
 

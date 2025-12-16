@@ -4,6 +4,8 @@ import { MdEdit, MdDelete, MdAdd } from "react-icons/md";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
 export default function ManagerClubs() {
   const createModalRef = useRef();
@@ -60,6 +62,7 @@ export default function ManagerClubs() {
     axiosSecure.post('/clubs', clubInfo)
       .then(res => {
         console.log(res.data);
+        toast.success('club create successfully')
       })
       .catch(err => console.log(err));
     console.log("Club Object:", clubInfo);
@@ -85,15 +88,38 @@ export default function ManagerClubs() {
         editModalRef.current.close()
       })
       .catch(err => console.log(err))
-
-
-
-
     console.log("Updated club:", data);
   };
 
   const handleDeleteClub = (id) => {
-    setClubs((prev) => prev.filter((c) => c.id !== id));
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axiosSecure.delete(`/clubs/${id}`)
+          .then(res => {
+            console.log(res.data);
+            refetch()
+
+          })
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your club has been deleted.",
+          icon: "success"
+        });
+      }
+    });
+
+
+    console.log('club id', id);
+
+
   };
 
   return (
@@ -126,7 +152,7 @@ export default function ManagerClubs() {
 
           <tbody>
             {clubs.map((club) => (
-              <tr key={club.id}>
+              <tr key={club._id}>
                 <td className="font-semibold">{club.clubName}</td>
                 <td>{club.category}</td>
                 <td>${club.membershipFee}</td>
@@ -140,7 +166,7 @@ export default function ManagerClubs() {
                   </button>
                   <button
                     className="btn btn-sm btn-error text-white flex items-center gap-1"
-                    onClick={() => handleDeleteClub(club.id)}
+                    onClick={() => handleDeleteClub(club._id)}
                   >
                     <MdDelete /> Delete
                   </button>

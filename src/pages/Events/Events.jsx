@@ -4,41 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import useAxios from "../../hooks/useAxios";
 
 
-const events = [
-    {
-        _id: "665f01a1b7a1f001a1110001",
-        title: "Photography Workshop",
-        description:
-            "Learn professional photography techniques with hands-on practice.",
-        eventDate: "2025-12-20",
-        location: "Studio Room A",
-        isPaid: true,
-        eventFee: 25,
-        clubName: "Creative Lens Club",
-    },
-    {
-        _id: "665f01a1b7a1f001a1110002",
-        title: "Weekend Hiking Meetup",
-        description:
-            "Join us for a refreshing hiking trip to the mountains.",
-        eventDate: "2025-12-28",
-        location: "Blue Mountain Trail",
-        isPaid: false,
-        eventFee: 0,
-        clubName: "Adventure Seekers Club",
-    },
-    {
-        _id: "665f01a1b7a1f001a1110003",
-        title: "Tech Talk: AI & Future",
-        description:
-            "Discussion on AI trends and future career opportunities.",
-        eventDate: "2026-01-05",
-        location: "Auditorium Hall",
-        isPaid: true,
-        eventFee: 15,
-        clubName: "Tech Innovators Club",
-    },
-];
 
 const Events = () => {
     const axiosInstance = useAxios()
@@ -62,7 +27,7 @@ const Events = () => {
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-12">
-            <h1 className="text-3xl font-bold mb-8 text-center">
+            <h1 className="text-3xl text-primary font-bold mb-8 text-center">
                 Upcoming Events
             </h1>
 
