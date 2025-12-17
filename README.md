@@ -1,8 +1,11 @@
-ClubSphere
-🔍 Project Purpose
+ClubSphere – Membership & Event Management for Local Clubs
 
-ClubSphere is a MERN stack web application for discovering, joining, and managing local clubs and events.
-It supports role-based dashboards for Admin, Club Manager, and Member, with secure authentication and Stripe payments.
+📌 Project Purpose
+
+ClubSphere is a full-stack MERN web application designed to help users discover, join, and manage local clubs and events.
+It provides role-based dashboards for Admins, Club Managers, and Members, allowing seamless club creation, membership management, event registration, and secure online payments via Stripe.
+
+The platform focuses on real-world club management scenarios, secure authentication, and a modern, recruiter-friendly UI.
 
 🌐 Live Site
 
@@ -14,28 +17,113 @@ Client: https://github.com/Azizul-haque1/club-sphere-client
 
 Server: https://github.com/Azizul-haque1/club-sphere-server
 
-⭐ Key Features
 
-Firebase Authentication (Email/Password + Google)
+🚀 Key Features
+🔑 Authentication & Security
 
-Role-based dashboards (Admin / Manager / Member)
+Firebase Authentication (Email/Password + Google Login)
 
-Club & Event CRUD operations
+Password validation (uppercase, lowercase, minimum 6 characters)
 
-Stripe payment integration (test mode)
+JWT-based secure API access
 
-Search, filter, and sorting
+Firebase token verification on server-side
 
-Protected routes Firebase token
+Role-based protected routes (Admin, Club Manager, Member)
 
-Responsive , animated UI (Framer Motion) & gsap
+🏠 Public Features
 
-🧰 Technologies Used
+Browse all approved clubs and upcoming events
+
+Club details with membership fee information
+
+Event details with registration option
+
+Server-side search and category filtering
+
+Sorting by membership fee, event date, or creation date
+
+Fully responsive design (mobile, tablet, desktop)
+
+Animated sections using Framer Motion
+
+👤 Member Dashboard
+
+View joined clubs and membership status
+
+Register for free or paid events
+
+View upcoming registered events
+
+Membership & payment history
+
+Secure Stripe payments for memberships and events
+
+🏢 Club Manager Dashboard
+
+Create and manage clubs
+
+Set free or paid membership fees
+
+Create, update, and delete events
+
+View club members and event registrations
+
+Track payments received for their clubs
+
+🛡️ Admin Dashboard
+
+Monitor total users, clubs, events, memberships, and payments
+
+Approve or reject club creation requests
+
+Manage user roles (Admin / Club Manager / Member)
+
+View all transactions and platform statistics
+
+Data visualization using charts
+
+💳 Stripe Payment Integration
+
+Secure Stripe payment flow (test mode)
+
+Paid club memberships
+
+Paid event registrations
+
+Payment records stored and linked to memberships
+
+🧩 Technologies Used
 Frontend
 
-React, React Router, Firebase, Tailwind CSS, DaisyUI,
-React Hook Form, TanStack Query, Framer Motion, Stripe.js
+React 18
+
+React Router 
+
+Firebase Authentication
+
+React Hook Form
+
+TanStack Query (React Query)
+
+Tailwind CSS
+
+DaisyUI
+
+Framer Motion
+
+Axios
+
+Stripe.js
 
 Backend
 
-Node.js, Express.js, MongoDB, Firebase Admin, Stripe, JWT, dotenv
+Node.js
+
+Express.js
+
+MongoDB
+
+Firebase Admin SDK
+
+Stripe API
