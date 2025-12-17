@@ -1,16 +1,41 @@
-# React + Vite
+ClubSphere
+🔍 Project Purpose
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ClubSphere is a MERN stack web application for discovering, joining, and managing local clubs and events.
+It supports role-based dashboards for Admin, Club Manager, and Member, with secure authentication and Stripe payments.
 
-Currently, two official plugins are available:
+🌐 Live Site
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🔗 https://club-sphere.netlify.app
 
-## React Compiler
+📂 GitHub Repositories
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Client: https://github.com/Azizul-haque1/club-sphere-client
 
-## Expanding the ESLint configuration
+Server: https://github.com/Azizul-haque1/club-sphere-server
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+⭐ Key Features
+
+Firebase Authentication (Email/Password + Google)
+
+Role-based dashboards (Admin / Manager / Member)
+
+Club & Event CRUD operations
+
+Stripe payment integration (test mode)
+
+Search, filter, and sorting
+
+Protected routes Firebase token
+
+Responsive , animated UI (Framer Motion) & gsap
+
+🧰 Technologies Used
+Frontend
+
+React, React Router, Firebase, Tailwind CSS, DaisyUI,
+React Hook Form, TanStack Query, Framer Motion, Stripe.js
+
+Backend
+
+Node.js, Express.js, MongoDB, Firebase Admin, Stripe, JWT, dotenv
