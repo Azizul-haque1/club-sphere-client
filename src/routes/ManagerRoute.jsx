@@ -1,19 +1,17 @@
 import React from 'react';
 import useAuth from '../hooks/useAuth';
-import Loader from '../components/shared/Loader';
 import useRole from '../hooks/useRole';
 import ForbiddenAccessPage from '../components/ForbiddenAccessPage';
 
-const AdminRoute = ({ children }) => {
+const ManagerRoute = ({ children }) => {
     const { loading } = useAuth()
     const { role, roleLoading } = useRole()
-    console.log(role);
 
     if (loading || roleLoading) {
         return <Loader />
     }
 
-    if (role !== 'admin') {
+    if (role !== 'manager') {
         return <ForbiddenAccessPage />
     }
 
@@ -21,4 +19,4 @@ const AdminRoute = ({ children }) => {
     return children
 };
 
-export default AdminRoute;
+export default ManagerRoute;

@@ -5,24 +5,24 @@ import useAuth from '../../../hooks/useAuth';
 import toast from 'react-hot-toast';
 
 
+
 const Login = () => {
     const { signInUser } = useAuth()
     const { register, handleSubmit, formState: { errors } } = useForm();
     const location = useLocation()
     const navigate = useNavigate()
 
-    const handleLogin = (data) => {
-        signInUser(data.email, data.password)
-            .then(res => {
-                console.log(res.user);
-                toast.success('login successfully')
-                navigate(location.state || '/')
-
-            })
-            .catch(err => console.log(err))
-
+    const handleLogin = async (data) => {
+        try {
+            const res = await signInUser(data.email, data.password);
+            console.log(res.user);
+            toast.success('Login successfully');
+            navigate(location.state || '/');
+        } catch (error) {
+            console.error(error);
+            toast.error('Invalid email or password');
+        }
     };
-
     return (
         <div className="flex justify-center items-center min-h-screen ">
             <div className="card bg-white/20 w-full max-w-md mx-4 py-10 shadow-xl border border-base-200 rounded-lg p-6">

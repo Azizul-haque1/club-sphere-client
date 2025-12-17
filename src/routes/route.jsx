@@ -23,6 +23,8 @@ import Events from "../pages/Events/Events";
 import EventDetails from "../pages/Events/EventDetails";
 import Profile from "../pages/Profile/Profile";
 import Home from "../pages/Home/Home/Home";
+import ManagerRoute from "./ManagerRoute";
+import AdminRoute from "./AdminRoute";
 
 export const route = createBrowserRouter([
     {
@@ -111,15 +113,27 @@ export const route = createBrowserRouter([
             // club manager route
             {
                 path: 'events-management',
-                element: <EventsManagement />,
+                element:
+                    <ManagerRoute>
+                        <EventsManagement />,
+
+                    </ManagerRoute>
             },
             {
                 path: 'event-registrations',
-                element: <EventRegistrations />,
+                element:
+                    <ManagerRoute>
+
+                        <EventRegistrations />,
+                    </ManagerRoute>
             },
             {
                 path: 'club-members',
-                element: <ClubMembers></ClubMembers>,
+                element:
+                    <ManagerRoute>
+
+                        <ClubMembers></ClubMembers>,
+                    </ManagerRoute>
             },
 
 
@@ -128,19 +142,30 @@ export const route = createBrowserRouter([
             {
 
                 path: 'manage-user',
-                element: <ManageUsers />
+                element:
+                    <AdminRoute>
+                        <ManageUsers />
+                    </AdminRoute>
 
 
             },
             {
 
                 path: 'manage-clubs',
-                element: <ManageClubs />
+                element:
+                    <AdminRoute>
+
+                        <ManageClubs />
+                    </AdminRoute>
             },
             {
 
                 path: 'view-payments',
-                element: <ViewPayments />
+                element:
+
+                    <AdminRoute>
+                        <ViewPayments />
+                    </AdminRoute>
             },
 
         ]

@@ -26,26 +26,6 @@ const MyClubs = () => {
     console.log(myClubs);
 
 
-
-    // const clubs = [
-    //     {
-    //         id: "1",
-    //         clubName: "Photography Club",
-    //         location: "Room A3",
-    //         membershipStatus: "active",
-    //         expiryDate: "2026-03-31",
-    //         detailsUrl: "/clubs/1", // could be a React Router path or full URL
-    //     },
-    //     {
-    //         id: "2",
-    //         clubName: "Chess Club",
-    //         location: "Room B1",
-    //         membershipStatus: "expired",
-    //         expiryDate: "2025-11-30",
-    //         detailsUrl: "/clubs/2",
-    //     },
-    // ];
-
     return (
         <div className="p-6 max-w-6xl mx-auto">
             <h2 className="text-3xl text-primary font-bold mb-6">My Clubs</h2>

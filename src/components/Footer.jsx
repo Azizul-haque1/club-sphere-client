@@ -55,17 +55,16 @@ const Footer = () => {
                             <Linkedin size={20} />
                         </a>
                     </div>
-                    <p className="text-xs text-base-content/60">
-                        © {new Date().getFullYear()} ClubSphere. All rights reserved.
-                    </p>
+
                 </div>
             </div>
 
             {/* Bottom Bar */}
             <div className="border-t border-base-content/10 mt-12 pt-8 text-center text-sm text-base-content/50 flex flex-col md:flex-row justify-center items-center gap-2">
-                <span>Made with</span>
-                <Heart size={16} className="text-red-500 fill-red-500" />
-                <span>for communities everywhere.</span>
+                <p className="text-xs text-base-content/60">
+                    © {new Date().getFullYear()} ClubSphere. All rights reserved.
+                </p>
+
             </div>
         </footer>
     );

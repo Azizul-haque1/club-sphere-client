@@ -11,34 +11,7 @@ const Payments = () => {
             return res.data
         }
     })
-    // console.log(data);
-    // const payments = [
-    //     {
-    //         id: "1",
-    //         amount: 40,
-    //         type: "Membership",
-    //         clubName: "Photography Club",
-    //         date: "2025-12-01",
-    //         status: "completed",
-    //     },
-    //     {
-    //         id: "2",
-    //         amount: 30,
-    //         type: "Membership",
-    //         clubName: "Chess Club",
-    //         date: "2025-11-15",
-    //         status: "failed",
-    //     },
-    //     {
-    //         id: "3",
-    //         amount: 20,
-    //         type: "Event",
-    //         clubName: "Chess Club",
-    //         date: "2025-12-05",
-    //         status: "completed",
-    //     },
-    // ];
-
+    
     return (
         <div className="p-6  max-w-6xl mx-auto">
             <h1 className="text-3xl text-primary font-bold mb-6">Payment History</h1>

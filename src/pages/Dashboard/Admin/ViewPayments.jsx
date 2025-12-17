@@ -1,35 +1,23 @@
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const ViewPayments = () => {
-    // Sample static payment data
-    const payments = [
-        {
-            userEmail: "john@example.com",
-            amount: 50,
-            type: "Membership",
-            clubName: "Chess Club",
-            date: "2025-12-01"
-        },
-        {
-            userEmail: "alice@example.com",
-            amount: 20,
-            type: "Event",
-            clubName: "Book Club",
-            date: "2025-12-02"
-        },
-        {
-            userEmail: "bob@example.com",
-            amount: 75,
-            type: "Membership",
-            clubName: "Fitness Club",
-            date: "2025-12-03"
-        }
-    ];
 
-    // Badge color based on type
+    const axiosSecure = useAxiosSecure()
+
+    const { data: payments = [] } = useQuery({
+        queryKey: ['payments'],
+        queryFn: async () => {
+            const res = await axiosSecure('/all-paymentns/view')
+            return res.data
+        }
+    })
+
+    // console.log('payments ', data);
     const typeBadge = (type) => {
         const classes = {
-            Membership: "badge badge-primary",
+            membership: "badge badge-primary",
             Event: "badge badge-secondary"
         };
         return classes[type] || "badge";
@@ -64,7 +52,7 @@ const ViewPayments = () => {
                                     </span>
                                 </td>
                                 <td>{payment.clubName}</td>
-                                <td>{payment.date}</td>
+                                <td>{new Date(payment.createdAt).toLocaleDateString()}</td>
                             </tr>
                         ))}
                     </tbody>

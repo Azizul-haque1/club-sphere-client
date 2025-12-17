@@ -8,15 +8,19 @@ const Clubs = () => {
     const axiosInstance = useAxios()
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("");
+    const [sort, setSort] = useState("newest");
 
     const { data: clubs = [], isLoading } = useQuery({
-        queryKey: ['clubs', search, category],
+        queryKey: ['clubs', search, category,sort],
         queryFn: async () => {
-            const res = await axiosInstance.get(`/clubs?status=approved&search=${search}&category=${category}`)
+            const res = await axiosInstance.get(`/clubs?status=approved&search=${search}&category=${category}&sort=${sort}`)
             return res.data;
         },
         enabled: true,
     })
+
+
+    console.log('sort', sort,);
 
 
 
@@ -28,7 +32,7 @@ const Clubs = () => {
     return (
         <div className="max-w-7xl mx-auto px-4 py-10">
 
-            {/* ===== Heading ===== */}
+          
             <div className="text-center mb-10">
                 <h1 className="text-3xl text-primary font-bold">Explore All Clubs</h1>
                 <p className="text-gray-500 mt-2">
@@ -37,7 +41,7 @@ const Clubs = () => {
             </div>
 
             {/* filter and seacrch */}
-            <div className="flex flex-col md:flex-row gap-4 justify-between mb-8">
+            <div className="flex flex-col md:flex-row gap-4 justify-between mb-3">
 
                 {/* Search */}
                 <input
@@ -61,8 +65,20 @@ const Clubs = () => {
                     <option value="Art">Art</option>
                 </select>
             </div>
+            <div className=" flex justify-end">
+                <select
+                    // value={sort}
+                    onChange={(e) => setSort(e.target.value)}
+                    className="select select-bordered w-full md:w-1/4 mb-8"
+                >
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="feeLow">Lowest Fee</option>
+                    <option value="feeHigh">Highest Fee</option>
+                </select>
+            </div>
 
-            {/* ===== Clubs Grid ===== */}
+           
             {clubs.length > 0 ? (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
 

@@ -32,6 +32,17 @@ const MemberHome = () => {
 
         }
     })
+    const { data } = useQuery({
+        queryKey: ['test'],
+        queryFn: async () => {
+            const res = await axiosSecure.get('/usesr/test')
+            return res.data;
+
+        }
+    })
+
+
+    console.log('data test', data);
     // console.log('my', myUpcoming);
     // console.log('club', clubs);
 
