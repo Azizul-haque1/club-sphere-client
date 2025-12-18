@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import Loader from "../../../components/shared/Loader";
 
 const ViewPayments = () => {
 
     const axiosSecure = useAxiosSecure()
 
-    const { data: payments = [] } = useQuery({
+    const { data: payments = [], isLoading } = useQuery({
         queryKey: ['payments'],
         queryFn: async () => {
             const res = await axiosSecure('/all-paymentns/view')
@@ -14,6 +15,9 @@ const ViewPayments = () => {
         }
     })
 
+    if (isLoading) {
+        return <Loader />
+    }
     // console.log('payments ', data);
     const typeBadge = (type) => {
         const classes = {

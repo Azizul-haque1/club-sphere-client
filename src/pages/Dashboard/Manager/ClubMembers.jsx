@@ -2,11 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import useAuth from '../../../hooks/useAuth';
+import Loader from '../../../components/shared/Loader';
 
 const ClubMembers = () => {
     const axiosSecure = useAxiosSecure();
     const { user } = useAuth()
-    const { data: clubsMembers = [], refetch } = useQuery({
+    const { data: clubsMembers = [], refetch, isLoading } = useQuery({
         queryKey: ['clubs-members', user?.email],
         queryFn: async () => {
             const res = await axiosSecure.get(`/clubs/members?email=${user.email}`)
@@ -14,6 +15,9 @@ const ClubMembers = () => {
         }
     })
 
+    if (isLoading) {
+        return <Loader />
+    }
     // console.log('club members', clubsMembers);
 
     // console.log(clubsMembers);
@@ -65,10 +69,10 @@ const ClubMembers = () => {
                                                         : ''
                                                     }                                            </td>
                                                 <td>{
-                                                m.email  ?
-                                                new Date(m.joinDate).toLocaleDateString()
-                                                    :''
-                                                    }</td>
+                                                    m.email ?
+                                                        new Date(m.joinDate).toLocaleDateString()
+                                                        : ''
+                                                }</td>
                                                 <td className="text-right">
                                                     {
                                                         m.email ?

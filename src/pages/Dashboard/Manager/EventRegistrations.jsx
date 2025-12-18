@@ -2,12 +2,13 @@ import React from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
+import Loader from "../../../components/shared/Loader";
 
 export default function EventRegistrations() {
     const axiosSecure = useAxiosSecure()
     const { user } = useAuth();
 
-    const { data: registrations = [] } = useQuery({
+    const { data: registrations = [], isLoading } = useQuery({
         queryKey: ['registrations', user.email],
         queryFn: async () => {
             const res = await axiosSecure(`/my-clubs/event-registrations?email=${user.email}`)
@@ -15,6 +16,9 @@ export default function EventRegistrations() {
         }
     })
 
+    if (isLoading) {
+        return <Loader />
+    }
 
     return (
         <div className="p-6">

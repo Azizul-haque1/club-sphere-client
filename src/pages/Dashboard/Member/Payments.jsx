@@ -1,17 +1,22 @@
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import Loader from '../../../components/shared/Loader';
 
 const Payments = () => {
     const axiosSecure = useAxiosSecure()
-    const { data: payments = [] } = useQuery({
+    const { data: payments = [], isLoading } = useQuery({
         queryKey: ['my-paymentns"'],
         queryFn: async () => {
             const res = await axiosSecure.get('/my-paymentns')
             return res.data
         }
     })
-    
+
+    if (isLoading) {
+        return <Loader />
+    }
+
     return (
         <div className="p-6  max-w-6xl mx-auto">
             <h1 className="text-3xl text-primary font-bold mb-6">Payment History</h1>

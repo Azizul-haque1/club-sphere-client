@@ -3,17 +3,23 @@ import React from 'react';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import useAlert from '../../../hooks/userAlert';
 import Swal from 'sweetalert2';
+import Loader from '../../../components/shared/Loader';
+
 
 const ManageUsers = () => {
     const axiosSecure = useAxiosSecure()
     const showAlert = useAlert()
-    const { data: users = [], refetch } = useQuery({
+    const { data: users = [], refetch, isLoading } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
             const res = await axiosSecure.get('/users')
             return res.data
         }
     })
+
+    if (isLoading) {
+        return <Loader />
+    }
 
     const handleChangeRole = (user, role) => {
 

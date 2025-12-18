@@ -4,18 +4,23 @@ import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 import useAlert from "../../../hooks/userAlert";
+import Loader from "../../../components/shared/Loader";
 
 const ManageClubs = () => {
   const showAlert = useAlert()
   const { user } = useAuth()
   const axiosSecure = useAxiosSecure()
-  const { data: clubs = [], refetch } = useQuery({
+  const { data: clubs = [], refetch, isLoading } = useQuery({
     queryKey: ['clubs', user.email],
     queryFn: async () => {
       const res = await axiosSecure.get(`/clubs?email=${user.email}`)
       return res.data
     }
   })
+
+  if (isLoading) {
+    return <Loader />
+  }
 
   const statusBadge = (status) => {
     const classes = {

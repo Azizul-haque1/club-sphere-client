@@ -1,10 +1,11 @@
 import React from "react";
 import useAuth from "../../hooks/useAuth";
 import useRole from "../../hooks/useRole";
+import Loader from "../../components/shared/Loader";
 
 const Profile = () => {
-    const { user } = useAuth()
-    const { role } = useRole()
+    const { user, loading, } = useAuth()
+    const { role,roleLoading } = useRole()
     // const user = {
     //     name: "John Doe",
     //     role: "Admin",
@@ -12,6 +13,9 @@ const Profile = () => {
     //     phone: "+1 234 567 890",
     //     avatar: "https://i.pravatar.cc/150?img=12",
     // };
+    if (loading || roleLoading) {
+        return <Loader />
+    }
 
     return (
         <div className="max-w-4xl mx-auto p-6">

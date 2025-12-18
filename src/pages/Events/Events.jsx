@@ -2,18 +2,22 @@ import { Link } from "react-router";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxios from "../../hooks/useAxios";
+import Loader from "../../components/shared/Loader";
 
 
 
 const Events = () => {
     const axiosInstance = useAxios()
-    const { data: events = [] } = useQuery({
+    const { data: events = [], isLoading } = useQuery({
         queryKey: ['upcoming', 'events'],
         queryFn: async () => {
             const res = await axiosInstance.get('/upcoming/events')
             return res.data
         }
     })
+    if (isLoading) {
+        return <Loader />
+    }
 
     // console.log(data);
 

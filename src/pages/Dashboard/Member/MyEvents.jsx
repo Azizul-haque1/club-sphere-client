@@ -2,11 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
+import Loader from "../../../components/shared/Loader";
 
 const MyEvents = () => {
     const axiosSecure = useAxiosSecure()
     const { user } = useAuth()
-    const { data: events = [] } = useQuery({
+    const { data: events = [], isLoading } = useQuery({
         queryKey: ['my-events'],
         queryFn: async () => {
             const res = await axiosSecure.get('/my-events')
@@ -14,6 +15,11 @@ const MyEvents = () => {
         },
         enabled: !!user,
     })
+
+
+    if (isLoading) {
+        return <Loader />
+    }
 
 
     return (

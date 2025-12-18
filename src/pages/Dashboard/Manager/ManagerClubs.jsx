@@ -6,13 +6,14 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
+import Loader from "../../../components/shared/Loader";
 
 export default function ManagerClubs() {
   const createModalRef = useRef();
   const editModalRef = useRef();
   const { user } = useAuth()
   const axiosSecure = useAxiosSecure()
-  const { data: clubs = [], refetch } = useQuery({
+  const { data: clubs = [], refetch, isLoading } = useQuery({
     queryKey: ['clubs', user.email],
     queryFn: async () => {
       const res = await axiosSecure(`/clubs/by-creator?email=${user.email}&status=approved`)
@@ -36,6 +37,11 @@ export default function ManagerClubs() {
     handleSubmit: handleSubmitEdit,
     reset: resetEdit,
   } = useForm();
+
+  if (isLoading) {
+    return <Loader />
+  }
+
 
   const openCreateModal = () => {
     // resetCreate();
@@ -117,8 +123,7 @@ export default function ManagerClubs() {
     });
 
 
-    console.log('club id', id);
-
+    // console.log('club id', id);
 
   };
 

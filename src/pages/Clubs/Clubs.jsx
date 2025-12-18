@@ -11,7 +11,7 @@ const Clubs = () => {
     const [sort, setSort] = useState("newest");
 
     const { data: clubs = [], isLoading } = useQuery({
-        queryKey: ['clubs', search, category,sort],
+        queryKey: ['clubs', search, category, sort],
         queryFn: async () => {
             const res = await axiosInstance.get(`/clubs?status=approved&search=${search}&category=${category}&sort=${sort}`)
             return res.data;
@@ -24,15 +24,15 @@ const Clubs = () => {
 
 
 
-    // if (isLoading) {
-    //     return <Loader />
-    // }
+    if (isLoading) {
+        return <Loader />
+    }
 
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-10">
 
-          
+
             <div className="text-center mb-10">
                 <h1 className="text-3xl text-primary font-bold">Explore All Clubs</h1>
                 <p className="text-gray-500 mt-2">
@@ -78,7 +78,7 @@ const Clubs = () => {
                 </select>
             </div>
 
-           
+
             {clubs.length > 0 ? (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
