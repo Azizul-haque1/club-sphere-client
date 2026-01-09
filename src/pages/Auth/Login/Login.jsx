@@ -27,9 +27,9 @@ const Login = () => {
 
     return (
         <div className="min-h-screen flex bg-base-100">
-            <Helmet>
+            {/* <Helmet> */}
                 <title>Login | Club Sphere</title>
-            </Helmet>
+            {/* </Helmet> */}
 
             {/* Left Side - Decorative Image/Content */}
             <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-primary">

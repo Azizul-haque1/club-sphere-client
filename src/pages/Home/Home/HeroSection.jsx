@@ -59,7 +59,7 @@ const HeroSection = () => {
         <section
             ref={heroRef}
             className="relative mx-4 md:mx-auto
-            rounded-xl py-40 flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary/30 to-secondary/10 text-base-content"
+            rounded-xl py-20 flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary/30 to-secondary/10 text-base-content"
         >
             {/* Background Shapes for GSAP */}
             <div

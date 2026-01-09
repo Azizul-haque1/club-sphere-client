@@ -56,9 +56,9 @@ const Register = () => {
 
     return (
         <div className="min-h-screen flex bg-base-100">
-            <Helmet>
+            {/* <Helmet> */}
                 <title>Register | Club Sphere</title>
-            </Helmet>
+            {/* </Helmet> */}
 
             {/* Left Side - Form Section */}
             <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12 relative z-10">

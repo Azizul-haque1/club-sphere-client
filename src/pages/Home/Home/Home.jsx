@@ -12,7 +12,7 @@ const Home = () => {
     return (
         <section>
 
-            <section className='pt-10'>
+            <section className=''>
                 <HeroSection />
             </section>
             <section className='pt-10'>
