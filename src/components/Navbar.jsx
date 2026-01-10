@@ -50,6 +50,7 @@ const Navbar = () => {
     }
 
     navLinks.push({ path: '/about', label: 'About' })
+    navLinks.push({ path: '/contact', label: 'Contact' })
 
     return (
         <motion.nav

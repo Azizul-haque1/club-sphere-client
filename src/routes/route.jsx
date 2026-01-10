@@ -25,6 +25,7 @@ import Home from "../pages/Home/Home/Home";
 import ManagerRoute from "./ManagerRoute";
 import AdminRoute from "./AdminRoute";
 import About from "../pages/About/About";
+import Contact from "../pages/Contact/Contact";
 
 export const route = createBrowserRouter([
     {
@@ -78,6 +79,10 @@ export const route = createBrowserRouter([
             {
                 path: 'about',
                 Component: About
+            },
+            {
+                path: 'contact',
+                Component: Contact
             }
 
         ]
