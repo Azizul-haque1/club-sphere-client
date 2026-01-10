@@ -13,11 +13,12 @@ const Clubs = () => {
     const [category, setCategory] = useState("");
     const [sort, setSort] = useState("newest");
     const [debouncedSearch, setDebouncedSearch] = useState(search);
+    const [debouncedCategory, setDebouncedCategory] = useState(category);
 
     const categories = ["Photography", "Sports", "Tech", "Music", "Art"];
 
     const { data: clubs = [], isLoading } = useQuery({
-        queryKey: ['clubs', search, category, debouncedSearch, sort],
+        queryKey: ['clubs', search, category, debouncedSearch, debouncedCategory, sort],
         queryFn: async () => {
             const res = await axiosInstance.get(`/clubs?status=approved&search=${search}&category=${category}&sort=${sort}`);
             return res.data;
@@ -33,7 +34,15 @@ const Clubs = () => {
 
         return () => clearTimeout(timer);
     }, [search]);
-    
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedCategory(category);
+        }, 400);
+
+        return () => clearTimeout(timer);
+    }, [category]);
+
     const container = {
         hidden: { opacity: 0 },
         show: {
@@ -52,7 +61,7 @@ const Clubs = () => {
     return (
         <div className="min-h-screen bg-base-100 pb-20">
             {/* <Helmet> */}
-                <title>Explore Clubs | Club Sphere</title>
+            <title>Explore Clubs | Club Sphere</title>
             {/* </Helmet> */}
 
             {/* Hero Section */}
