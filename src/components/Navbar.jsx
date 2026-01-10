@@ -49,6 +49,8 @@ const Navbar = () => {
         navLinks.push({ path: '/dashboard', label: 'Dashboard' });
     }
 
+    navLinks.push({ path: '/about', label: 'About' })
+
     return (
         <motion.nav
             initial={{ y: -100 }}

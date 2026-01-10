@@ -1,7 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import Login from "../pages/Auth/Login/Login";
 import RootLayout from "../layouts/RootLayout";
-
 import Register from "../pages/Auth/Register/Register";
 import Clubs from "../pages/Clubs/Clubs";
 import ClubDetails from "../pages/Clubs/ClubDetails";
@@ -25,6 +24,7 @@ import Profile from "../pages/Profile/Profile";
 import Home from "../pages/Home/Home/Home";
 import ManagerRoute from "./ManagerRoute";
 import AdminRoute from "./AdminRoute";
+import About from "../pages/About/About";
 
 export const route = createBrowserRouter([
     {
@@ -75,6 +75,10 @@ export const route = createBrowserRouter([
                 Component: Register
 
             },
+            {
+                path: 'about',
+                Component: About
+            }
 
         ]
     },
